@@ -1,39 +1,33 @@
-import { users, type User, type InsertUser } from "@shared/schema";
-
-// modify the interface with any CRUD methods
-// you might need
+import { properties, type Property, type InsertProperty } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  createProperty(property: InsertProperty): Promise<Property>;
+  getPropertiesByPostcode(postcode: string): Promise<Property[]>;
+  getAllProperties(): Promise<Property[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  currentId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.currentId = 1;
+export class DatabaseStorage implements IStorage {
+  async createProperty(property: InsertProperty): Promise<Property> {
+    const [created] = await db.insert(properties).values(property).returning();
+    return created;
   }
 
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+  async getPropertiesByPostcode(postcode: string): Promise<Property[]> {
+    return await db
+      .select()
+      .from(properties)
+      .where(eq(properties.postcode, postcode))
+      .orderBy(desc(properties.createdAt));
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getAllProperties(): Promise<Property[]> {
+    return await db
+      .select()
+      .from(properties)
+      .orderBy(desc(properties.createdAt));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

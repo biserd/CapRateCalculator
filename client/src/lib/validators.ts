@@ -6,6 +6,7 @@ const numberString = z.string().refine(
 );
 
 export const propertyFormSchema = z.object({
+  postcode: z.string().min(1, "Postcode is required"),
   purchasePrice: numberString,
   marketValue: z.string().refine(
     (val) => val === "" || (!isNaN(Number(val)) && Number(val) > 0),
