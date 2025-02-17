@@ -1,11 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart as LineChartIcon, AlertCircle } from "lucide-react";
+import { LineChartIcon, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage } from "@/lib/calculators";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { MarketHeatMap } from "@/components/MarketHeatMap";
 
-function calculateAverages(properties: any[]) {
+interface PropertyData {
+  monthlyRent: string;
+  monthlyHoa: string;
+  annualTaxes: string;
+  annualInsurance: string;
+  annualMaintenance: string;
+  managementFees: string;
+  purchasePrice: string;
+  latitude?: number;
+  longitude?: number;
+  postcode: string;
+}
+
+function calculateAverages(properties: PropertyData[]): { avgPurchasePrice: number; avgMonthlyRent: number; avgCapRate: number } | null {
   if (!properties?.length) return null;
 
   const totals = properties.reduce((acc, property) => {
@@ -34,17 +48,54 @@ function calculateAverages(properties: any[]) {
   };
 }
 
+interface HeatMapDataPoint {
+  lat: number;
+  lng: number;
+  price: number;
+  rent: number;
+  capRate: number;
+}
+
 export default function MarketAnalysis() {
   const { data: properties } = useQuery({
     queryKey: ["/api/properties"],
   });
 
-  const marketAverages = calculateAverages(properties as any[]);
-  const hasData = properties && (properties as any[])?.length > 0;
+  const marketAverages = calculateAverages(properties || []);
+  const hasData = properties && properties.length > 0;
+
+  // Transform property data for heat map
+  const heatMapData: HeatMapDataPoint[] = properties ? properties.map(property => ({
+    lat: property.latitude || 0, 
+    lng: property.longitude || 0,
+    price: Number(property.purchasePrice),
+    rent: Number(property.monthlyRent),
+    capRate: calculateCapRate(
+      calculateNOI(
+        Number(property.monthlyRent) * 12,
+        (Number(property.monthlyHoa) * 12) +
+          Number(property.annualTaxes) +
+          Number(property.annualInsurance) +
+          Number(property.annualMaintenance) +
+          Number(property.managementFees)
+      ),
+      Number(property.purchasePrice)
+    )
+  })) : [];
+
+  // Center map on average coordinates of properties
+  const center: [number, number] = heatMapData.length > 0 ? [
+    heatMapData.reduce((sum, point) => sum + point.lat, 0) / heatMapData.length,
+    heatMapData.reduce((sum, point) => sum + point.lng, 0) / heatMapData.length,
+  ] : [51.505, -0.09];
 
   // Group properties by postcode for trend analysis
-  const trendData = properties ? (properties as any[]).reduce((acc: any, property: any) => {
-    const existing = acc.find((item: any) => item.postcode === property.postcode);
+  interface TrendDataPoint {
+    postcode: string;
+    properties: { price: number; rent: number; capRate: number }[];
+  }
+  const trendData: TrendDataPoint[] = properties ? properties.reduce((acc: TrendDataPoint[], property: PropertyData) => {
+    const existing = acc.find((item) => item.postcode === property.postcode);
     const noi = calculateNOI(
       Number(property.monthlyRent) * 12,
       (Number(property.monthlyHoa) * 12) +
@@ -141,71 +192,79 @@ export default function MarketAnalysis() {
         )}
 
         {hasData && (
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Price Trends by Postcode</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={trendData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="postcode" />
-                      <YAxis
-                        tickFormatter={(value) => formatCurrency(value)}
-                      />
-                      <Tooltip
-                        formatter={(value: any) => formatCurrency(value)}
-                        labelFormatter={(label) => `Postcode: ${label}`}
-                      />
-                      {trendData.map((data: any, index: number) => (
-                        <Line
-                          key={index}
-                          type="monotone"
-                          dataKey="properties[0].price"
-                          stroke={`hsl(${index * 60}, 70%, 50%)`}
-                          name={`Price (${data.postcode})`}
-                        />
-                      ))}
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+          <>
+            <MarketHeatMap
+              center={center}
+              zoom={13}
+              dataPoints={heatMapData}
+            />
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Cap Rate Distribution</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={trendData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="postcode" />
-                      <YAxis
-                        tickFormatter={(value) => `${value.toFixed(2)}%`}
-                      />
-                      <Tooltip
-                        formatter={(value: any) => `${Number(value).toFixed(2)}%`}
-                        labelFormatter={(label) => `Postcode: ${label}`}
-                      />
-                      {trendData.map((data: any, index: number) => (
-                        <Line
-                          key={index}
-                          type="monotone"
-                          dataKey="properties[0].capRate"
-                          stroke={`hsl(${index * 60}, 70%, 50%)`}
-                          name={`Cap Rate (${data.postcode})`}
+            <div className="grid gap-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Price Trends by Postcode</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={trendData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="postcode" />
+                        <YAxis
+                          tickFormatter={(value) => formatCurrency(value)}
                         />
-                      ))}
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                        <Tooltip
+                          formatter={(value) => formatCurrency(value)}
+                          labelFormatter={(label) => `Postcode: ${label}`}
+                        />
+                        {trendData.map((data, index) => (
+                          <Line
+                            key={index}
+                            type="monotone"
+                            dataKey="properties[0].price"
+                            stroke={`hsl(${index * 60}, 70%, 50%)`}
+                            name={`Price (${data.postcode})`}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Cap Rate Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={trendData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="postcode" />
+                        <YAxis
+                          tickFormatter={(value) => `${value.toFixed(2)}%`}
+                        />
+                        <Tooltip
+                          formatter={(value) => `${Number(value).toFixed(2)}%`}
+                          labelFormatter={(label) => `Postcode: ${label}`}
+                        />
+                        {trendData.map((data, index) => (
+                          <Line
+                            key={index}
+                            type="monotone"
+                            dataKey="properties[0].capRate"
+                            stroke={`hsl(${index * 60}, 70%, 50%)`}
+                            name={`Cap Rate (${data.postcode})`}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </>
         )}
       </div>
     </div>
