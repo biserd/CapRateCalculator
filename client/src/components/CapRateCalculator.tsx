@@ -14,6 +14,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { useEffect } from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PropertyReport } from "./PropertyReport";
+import { RiskScoreVisualization } from "./RiskScoreVisualization";
+import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
 
 export default function CapRateCalculator() {
   const queryClient = useQueryClient();
@@ -67,6 +69,8 @@ export default function CapRateCalculator() {
   }, [watch, saveMutation]);
 
   const results = calculateResults(formValues);
+  const riskScores = calculateRiskScores(formValues, comparableProperties);
+  const overallRiskScore = calculateOverallRiskScore(riskScores);
 
   function onReset() {
     form.reset();
@@ -303,7 +307,6 @@ export default function CapRateCalculator() {
               )}
             />
           </div>
-
           <div className="flex gap-4">
             <Button type="button" variant="outline" onClick={onReset}>Reset</Button>
           </div>
@@ -389,6 +392,12 @@ export default function CapRateCalculator() {
           </div>
         </div>
       )}
+      <div className="mt-8">
+        <RiskScoreVisualization
+          riskScores={riskScores}
+          overallScore={overallRiskScore}
+        />
+      </div>
     </div>
   );
 }
