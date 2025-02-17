@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { propertyFormSchema, type PropertyFormData } from "@/lib/validators";
-import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage } from "@/lib/calculators";
+import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -72,6 +72,11 @@ export default function CapRateCalculator() {
     form.reset();
   }
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, field: any) => {
+    const formatted = formatInputCurrency(e.target.value);
+    field.onChange(parseCurrency(formatted));
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -112,7 +117,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Purchase Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -135,7 +146,13 @@ export default function CapRateCalculator() {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -148,7 +165,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Monthly Rental Income</FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -161,7 +184,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Monthly HOA Fees</FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,7 +203,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Annual Property Taxes</FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,7 +222,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Annual Insurance Cost</FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -200,7 +241,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Annual Maintenance Costs</FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -223,7 +270,13 @@ export default function CapRateCalculator() {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="$0" {...field} />
+                    <Input 
+                      placeholder="$0.00" 
+                      {...field}
+                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      onBlur={(e) => handleBlur(e, field)}
+                      onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

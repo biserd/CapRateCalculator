@@ -48,3 +48,24 @@ export function formatPercentage(value: number | null): string {
     maximumFractionDigits: 2,
   }).format(value / 100);
 }
+
+export function parseCurrency(value: string): string {
+  // Remove all non-numeric characters except decimal point
+  return value.replace(/[^0-9.]/g, '');
+}
+
+export function formatInputCurrency(value: string): string {
+  if (!value) return '';
+
+  // Parse the number from the string, removing any existing formatting
+  const number = Number(parseCurrency(value));
+  if (isNaN(number)) return '';
+
+  // Format the number as currency
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
+}
