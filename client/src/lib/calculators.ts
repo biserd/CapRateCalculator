@@ -7,6 +7,30 @@ export function calculateCapRate(noi: number, propertyValue: number): number {
   return (noi / propertyValue) * 100;
 }
 
+export function calculateMonthlyMortgage(
+  principal: number,
+  annualRate: number,
+  years: number
+): number {
+  const monthlyRate = annualRate / 1200; // Convert annual rate to monthly decimal
+  const numberOfPayments = years * 12;
+
+  if (monthlyRate === 0) return principal / numberOfPayments;
+
+  return (
+    (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+    (Math.pow(1 + monthlyRate, numberOfPayments) - 1)
+  );
+}
+
+export function calculateCashOnCashReturn(
+  annualCashFlow: number,
+  totalInvestment: number
+): number {
+  if (totalInvestment === 0) return 0;
+  return (annualCashFlow / totalInvestment) * 100;
+}
+
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',

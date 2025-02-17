@@ -23,4 +23,23 @@ export const propertyFormSchema = z.object({
   )
 });
 
+export const loanCalculatorSchema = z.object({
+  purchasePrice: numberString,
+  downPaymentPercent: z.string().refine(
+    (val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100,
+    "Must be between 0 and 100"
+  ),
+  interestRate: z.string().refine(
+    (val) => !isNaN(Number(val)) && Number(val) > 0,
+    "Must be greater than 0"
+  ),
+  loanTerm: z.string().refine(
+    (val) => !isNaN(Number(val)) && Number(val) > 0,
+    "Must be greater than 0"
+  ),
+  monthlyRent: numberString,
+  monthlyExpenses: numberString,
+});
+
 export type PropertyFormData = z.infer<typeof propertyFormSchema>;
+export type LoanCalculatorData = z.infer<typeof loanCalculatorSchema>;
