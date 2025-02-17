@@ -17,11 +17,17 @@ interface RiskScoreVisualizationProps {
 }
 
 const riskDescriptions = {
-  marketRisk: "Measures market volatility, price trends, and supply/demand dynamics",
-  financialRisk: "Evaluates cash flow stability, debt service coverage, and financial leverage",
-  propertyCondition: "Assesses property age, maintenance needs, and potential repair costs",
-  locationRisk: "Analyzes neighborhood trends, crime rates, and economic factors",
-  tenantRisk: "Considers tenant quality, vacancy rates, and rental market conditions"
+  marketRisk: "Measures market volatility, price trends, and supply/demand dynamics. Low risk indicates stable market conditions, moderate risk suggests some market uncertainty, and high risk points to significant market volatility.",
+  financialRisk: "Evaluates cash flow stability, debt service coverage, and financial leverage. Low risk means strong financial metrics, moderate risk indicates acceptable performance with some concerns, and high risk suggests potential financial stress.",
+  propertyCondition: "Assesses property age, maintenance needs, and potential repair costs. Low risk implies a well-maintained property, moderate risk indicates some maintenance needs, and high risk suggests significant repairs or updates required.",
+  locationRisk: "Analyzes neighborhood trends, crime rates, and economic factors. Low risk represents prime locations, moderate risk indicates transitional areas, and high risk suggests challenging neighborhood conditions.",
+  tenantRisk: "Considers tenant quality, vacancy rates, and rental market conditions. Low risk indicates strong rental demand and quality tenants, moderate risk suggests average market conditions, and high risk implies potential leasing challenges."
+};
+
+const riskLevelDetails = {
+  low: "Low Risk (1-3): Favorable conditions with minimal concerns. Generally indicates a stable investment opportunity with good fundamentals.",
+  moderate: "Moderate Risk (4-6): Some concerns present but manageable. May require additional monitoring and risk management strategies.",
+  high: "High Risk (7-10): Significant concerns that need careful consideration. May require substantial risk mitigation or reconsideration of investment."
 };
 
 export function RiskScoreVisualization({ riskScores, overallScore }: RiskScoreVisualizationProps) {
@@ -77,11 +83,19 @@ export function RiskScoreVisualization({ riskScores, overallScore }: RiskScoreVi
             </ResponsiveContainer>
           </div>
           <div className="space-y-4">
+            <div className="mb-4">
+              <h3 className="font-semibold text-lg mb-2">Risk Level Guide</h3>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p className="text-green-600">{riskLevelDetails.low}</p>
+                <p className="text-yellow-600">{riskLevelDetails.moderate}</p>
+                <p className="text-red-600">{riskLevelDetails.high}</p>
+              </div>
+            </div>
             <h3 className="font-semibold text-lg">Risk Factors Breakdown</h3>
             {Object.entries(riskScores).map(([key, value]) => {
               const formattedKey = key.replace(/([A-Z])/g, ' $1').trim();
               const description = riskDescriptions[key as keyof RiskScore];
-              
+
               return (
                 <div key={key} className="space-y-2">
                   <div className="flex items-center justify-between">

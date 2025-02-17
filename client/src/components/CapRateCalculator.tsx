@@ -105,6 +105,8 @@ export default function CapRateCalculator() {
                   Number(property.purchasePrice)
                 )
               }))}
+              riskScores={riskScores}
+              overallRiskScore={overallRiskScore}
             />
           }
           fileName={`property-analysis-${formValues.postcode}.pdf`}

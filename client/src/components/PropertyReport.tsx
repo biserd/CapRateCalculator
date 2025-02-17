@@ -2,6 +2,30 @@ import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { PropertyFormData } from "@/lib/validators";
 import { formatCurrency, formatPercentage } from "@/lib/calculators";
 
+interface PropertyReportProps {
+  formData: PropertyFormData;
+  results: {
+    annualIncome: number;
+    annualExpenses: number;
+    noi: number;
+    capRatePurchase: number;
+    capRateMarket: number | null;
+  };
+  comparableProperties?: Array<{
+    purchasePrice: number;
+    monthlyRent: number;
+    capRate: number;
+  }>;
+  riskScores?: {
+    marketRisk: number;
+    financialRisk: number;
+    propertyCondition: number;
+    locationRisk: number;
+    tenantRisk: number;
+  };
+  overallRiskScore?: number;
+}
+
 const styles = StyleSheet.create({
   page: {
     padding: 30,
@@ -62,25 +86,28 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     textAlign: 'center',
   },
+  riskSection: {
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: '#f9fafb',
+  },
+  riskTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  riskScore: {
+    fontSize: 12,
+    marginBottom: 3,
+  },
+  riskDescription: {
+    fontSize: 10,
+    color: '#6B7280',
+    marginBottom: 5,
+  },
 });
 
-interface PropertyReportProps {
-  formData: PropertyFormData;
-  results: {
-    annualIncome: number;
-    annualExpenses: number;
-    noi: number;
-    capRatePurchase: number;
-    capRateMarket: number | null;
-  };
-  comparableProperties?: Array<{
-    purchasePrice: number;
-    monthlyRent: number;
-    capRate: number;
-  }>;
-}
-
-export function PropertyReport({ formData, results, comparableProperties }: PropertyReportProps) {
+export function PropertyReport({ formData, results, comparableProperties, riskScores, overallRiskScore }: PropertyReportProps) {
   const formatValue = (value: string | number | null) => {
     if (value === null || value === "") return "N/A";
     if (typeof value === "string") return value;
@@ -217,6 +244,55 @@ export function PropertyReport({ formData, results, comparableProperties }: Prop
                 </View>
               </View>
             ))}
+          </View>
+        )}
+
+        {/* Risk Analysis */}
+        {riskScores && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Risk Analysis</Text>
+
+            <View style={styles.riskSection}>
+              <Text style={styles.riskTitle}>
+                Overall Risk Score: {overallRiskScore?.toFixed(1)}
+                {overallRiskScore && ` - ${
+                  overallRiskScore <= 3 ? "Low Risk" :
+                  overallRiskScore <= 6 ? "Moderate Risk" :
+                  "High Risk"
+                }`}
+              </Text>
+              <Text style={styles.riskDescription}>
+                {overallRiskScore && (
+                  overallRiskScore <= 3 ? "Favorable conditions with minimal concerns" :
+                  overallRiskScore <= 6 ? "Some concerns present but manageable" :
+                  "Significant concerns that need careful consideration"
+                )}
+              </Text>
+            </View>
+
+            <View style={styles.riskSection}>
+              <Text style={styles.riskTitle}>Risk Factors Breakdown:</Text>
+              {Object.entries(riskScores).map(([key, value]) => (
+                <View key={key}>
+                  <Text style={styles.riskScore}>
+                    {key.replace(/([A-Z])/g, ' $1').trim()}: {value.toFixed(1)} - {
+                      value <= 3 ? "Low Risk" :
+                      value <= 6 ? "Moderate Risk" :
+                      "High Risk"
+                    }
+                  </Text>
+                  <Text style={styles.riskDescription}>
+                    {
+                      key === "marketRisk" ? "Market volatility and trends analysis" :
+                      key === "financialRisk" ? "Cash flow stability and financial metrics" :
+                      key === "propertyCondition" ? "Property maintenance and repair needs" :
+                      key === "locationRisk" ? "Neighborhood and economic factors" :
+                      "Tenant quality and rental market conditions"
+                    }
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
 
