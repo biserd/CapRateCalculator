@@ -34,9 +34,9 @@ export function MainNav() {
         const Icon = item.icon;
         return (
           <Link key={item.href} href={item.href}>
-            <a
+            <span
               className={cn(
-                "flex items-center space-x-2 text-sm font-medium transition-colors hover:text-primary",
+                "flex items-center space-x-2 text-sm font-medium transition-colors hover:text-primary cursor-pointer",
                 location === item.href
                   ? "text-primary"
                   : "text-muted-foreground"
@@ -44,7 +44,7 @@ export function MainNav() {
             >
               <Icon className="h-4 w-4" />
               <span>{item.title}</span>
-            </a>
+            </span>
           </Link>
         );
       })}
