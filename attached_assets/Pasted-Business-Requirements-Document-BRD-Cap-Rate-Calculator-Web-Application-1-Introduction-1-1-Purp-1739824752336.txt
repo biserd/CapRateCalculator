@@ -1,0 +1,104 @@
+Business Requirements Document (BRD)
+
+Cap Rate Calculator Web Application
+
+1. Introduction
+
+1.1 Purpose
+
+This document outlines the business requirements for a web-based Cap Rate Calculator that enables real estate investors to quickly assess the profitability of a property. The application will allow users to input key property details and receive an instant cap rate calculation.
+
+1.2 Scope
+	•	A simple, intuitive web-based tool for calculating cap rates.
+	•	Users will input property details (purchase price, market value, rent, expenses, etc.).
+	•	The system will calculate and display the cap rate based on user inputs.
+	•	Optionally, users can compare cap rates based on purchase price and market value.
+
+2. Business Objectives
+	1.	Automate cap rate calculations to provide quick and accurate results.
+	2.	Enhance decision-making for real estate investors by allowing comparisons of different scenarios.
+	3.	Provide an easy-to-use interface that requires minimal financial knowledge.
+	4.	Ensure accessibility across desktop and mobile devices.
+	5.	Potential future enhancements: User account creation, saving calculations, and advanced financial modeling.
+
+3. Functional Requirements
+
+3.1 User Inputs
+
+The web application will include input fields for:
+	•	Property Purchase Price ($)
+	•	Down Payment (%) (Optional)
+	•	Market Value ($) (Optional)
+	•	Monthly Rental Income ($)
+	•	Monthly HOA Fees ($)
+	•	Annual Property Taxes ($)
+	•	Annual Insurance Cost ($)
+	•	Annual Maintenance Costs ($)
+	•	Property Management Fees ($) (Optional)
+
+3.2 Calculation Logic
+	1.	Net Operating Income (NOI) Calculation:
+￼
+Where Annual Expenses = HOA Fees + Property Taxes + Insurance + Maintenance + Property Management Fees.
+	2.	Cap Rate Calculation:
+	•	Based on purchase price:
+￼
+	•	Based on market value (if provided):
+￼
+
+3.3 Output & Display
+	•	Display the calculated cap rate as a percentage.
+	•	Show breakdowns of NOI and annual expenses.
+	•	Allow comparison of cap rate based on purchase price vs. market value.
+	•	Display a simple summary of key financial metrics.
+
+4. Non-Functional Requirements
+	•	Performance: Results should be calculated instantly upon user input.
+	•	User Experience: Simple, clean UI with easy-to-understand labels and tooltips.
+	•	Accessibility: Mobile-friendly, responsive design.
+	•	Security: No user-sensitive data storage; all calculations happen on the client-side.
+	•	Scalability: Option to expand features, including multi-property analysis.
+
+5. User Interface (UI) Mockup (Conceptual)
+
+5.1 Input Section
+
+-------------------------------------------
+| Property Purchase Price [$________]    |
+| Market Value (Optional) [$________]    |
+| Monthly Rent [$________]               |
+| Monthly HOA Fees [$________]           |
+| Annual Property Tax [$________]        |
+| Annual Insurance Cost [$________]      |
+| Annual Maintenance Cost [$________]    |
+| Property Management Fees (Optional) [$_]|
+-------------------------------------------
+[Calculate Cap Rate]  [Reset]
+
+5.2 Output Section
+
+-------------------------------------------
+| Net Operating Income: $____            |
+| Cap Rate (Based on Purchase Price): ___% |
+| Cap Rate (Based on Market Value): ___%  |
+-------------------------------------------
+
+6. Technical Requirements
+	•	Frontend: React.js / Vue.js or a simple HTML+JavaScript framework.
+	•	Backend (if needed for future expansion): Node.js / Python (Flask/Django).
+	•	Hosting: AWS, Vercel, Netlify, or simple static hosting.
+	•	Database (if needed for user accounts): Firebase, PostgreSQL, or MongoDB.
+
+7. Future Enhancements
+	•	Allow users to save and compare multiple properties.
+	•	Generate PDF reports for investors.
+	•	Add loan calculations (e.g., cash-on-cash return, mortgage payments).
+	•	Integration with real estate APIs to fetch market values.
+
+8. Approval & Next Steps
+	•	Review business requirements.
+	•	Create wireframes and prototype UI.
+	•	Develop a minimum viable product (MVP).
+	•	Test with real users and gather feedback.
+
+This BRD provides a foundation to build a simple, effective Cap Rate Calculator. Let me know if you want additional refinements!
