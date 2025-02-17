@@ -8,6 +8,10 @@ import Home from "@/pages/home";
 import LoanCalculator from "@/pages/loan-calculator";
 import PropertyComparison from "@/pages/comparison";
 import MarketAnalysis from "@/pages/market";
+import LocationAnalysis from "@/pages/location";
+import PortfolioDashboard from "@/pages/portfolio";
+import AdvancedAnalysis from "@/pages/advanced";
+import Education from "@/pages/education";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,6 +34,10 @@ function Router() {
         <Route path="/loan-calculator" component={LoanCalculator} />
         <Route path="/comparison" component={PropertyComparison} />
         <Route path="/market" component={MarketAnalysis} />
+        <Route path="/location" component={LocationAnalysis} />
+        <Route path="/portfolio" component={PortfolioDashboard} />
+        <Route path="/advanced" component={AdvancedAnalysis} />
+        <Route path="/education" component={Education} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
