@@ -8,6 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 import { calculateMonthlyMortgage, calculateCashOnCashReturn, formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } from "@/lib/calculators";
+import { FileDown } from "lucide-react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { LoanReport } from "@/components/LoanReport";
+import { Button } from "@/components/ui/button";
 
 export default function LoanCalculator() {
   const form = useForm<LoanCalculatorData>({
@@ -35,9 +39,27 @@ export default function LoanCalculator() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <Calculator className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">Loan Calculator</h1>
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <Calculator className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">Loan Calculator</h1>
+          </div>
+          <PDFDownloadLink
+            document={
+              <LoanReport
+                formData={formValues}
+                results={results}
+              />
+            }
+            fileName={`loan-analysis.pdf`}
+          >
+            {({ loading }) => (
+              <Button disabled={loading || !formValues.purchasePrice} variant="outline">
+                <FileDown className="mr-2 h-4 w-4" />
+                {loading ? "Generating PDF..." : "Export PDF"}
+              </Button>
+            )}
+          </PDFDownloadLink>
         </div>
 
         <Card>
