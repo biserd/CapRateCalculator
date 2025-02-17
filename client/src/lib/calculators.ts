@@ -61,11 +61,11 @@ export function formatInputCurrency(value: string): string {
   const number = Number(parseCurrency(value));
   if (isNaN(number)) return '';
 
-  // Format the number as currency
+  // Format the number as currency with no decimal places for whole numbers
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(number);
 }
