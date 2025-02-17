@@ -82,13 +82,33 @@ export default function CapRateCalculator() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Property Details</h2>
         <PDFDownloadLink 
-          document={<PropertyReport formData={formValues} results={results} />}
-          fileName="property-analysis.pdf"
+          document={
+            <PropertyReport 
+              formData={formValues} 
+              results={results} 
+              comparableProperties={comparableProperties?.map((property: any) => ({
+                purchasePrice: Number(property.purchasePrice),
+                monthlyRent: Number(property.monthlyRent),
+                capRate: calculateCapRate(
+                  calculateNOI(
+                    Number(property.monthlyRent) * 12,
+                    (Number(property.monthlyHoa) * 12) +
+                      Number(property.annualTaxes) +
+                      Number(property.annualInsurance) +
+                      Number(property.annualMaintenance) +
+                      Number(property.managementFees)
+                  ),
+                  Number(property.purchasePrice)
+                )
+              }))}
+            />
+          }
+          fileName={`property-analysis-${formValues.postcode}.pdf`}
         >
           {({ loading }) => (
-            <Button disabled={loading} variant="outline">
+            <Button disabled={loading || !formValues.postcode} variant="outline">
               <FileDown className="mr-2 h-4 w-4" />
-              Export PDF
+              {loading ? "Generating PDF..." : "Export PDF"}
             </Button>
           )}
         </PDFDownloadLink>
