@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import { calculateMonthlyMortgage, calculateCashOnCashReturn, formatCurrency, formatPercentage } from "@/lib/calculators";
+import { calculateMonthlyMortgage, calculateCashOnCashReturn, formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } from "@/lib/calculators";
 
 export default function LoanCalculator() {
   const form = useForm<LoanCalculatorData>({
@@ -26,6 +26,11 @@ export default function LoanCalculator() {
   const formValues = watch();
 
   const results = calculateResults(formValues);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, field: any) => {
+    const formatted = formatInputCurrency(e.target.value);
+    field.onChange(parseCurrency(formatted));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -50,7 +55,13 @@ export default function LoanCalculator() {
                       <FormItem>
                         <FormLabel>Purchase Price</FormLabel>
                         <FormControl>
-                          <Input placeholder="$0" {...field} />
+                          <Input 
+                            placeholder="$0.00" 
+                            {...field}
+                            value={field.value ? formatInputCurrency(field.value) : ''}
+                            onBlur={(e) => handleBlur(e, field)}
+                            onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -102,7 +113,13 @@ export default function LoanCalculator() {
                       <FormItem>
                         <FormLabel>Expected Monthly Rent</FormLabel>
                         <FormControl>
-                          <Input placeholder="$0" {...field} />
+                          <Input 
+                            placeholder="$0.00" 
+                            {...field}
+                            value={field.value ? formatInputCurrency(field.value) : ''}
+                            onBlur={(e) => handleBlur(e, field)}
+                            onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -127,7 +144,13 @@ export default function LoanCalculator() {
                           </TooltipProvider>
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="$0" {...field} />
+                          <Input 
+                            placeholder="$0.00" 
+                            {...field}
+                            value={field.value ? formatInputCurrency(field.value) : ''}
+                            onBlur={(e) => handleBlur(e, field)}
+                            onChange={(e) => field.onChange(parseCurrency(e.target.value))}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
