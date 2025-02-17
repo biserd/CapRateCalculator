@@ -5,16 +5,17 @@ import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage } from
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, FileDown } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useEffect } from "react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PropertyReport } from "./PropertyReport";
 
 export default function CapRateCalculator() {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const form = useForm<PropertyFormData>({
@@ -48,26 +49,24 @@ export default function CapRateCalculator() {
       await apiRequest("POST", "/api/properties", data);
     },
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Property details saved successfully",
-      });
       queryClient.invalidateQueries({ queryKey: ["/api/properties/postcode", postcode] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to save property details",
-        variant: "destructive",
-      });
-    },
+    }
   });
 
-  const results = calculateResults(formValues);
+  // Automatically save when form values change
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (type === "change" && Object.values(value).some(v => v !== "")) {
+        const isValid = propertyFormSchema.safeParse(value).success;
+        if (isValid) {
+          saveMutation.mutate(value as PropertyFormData);
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, saveMutation]);
 
-  function onSubmit(data: PropertyFormData) {
-    saveMutation.mutate(data);
-  }
+  const results = calculateResults(formValues);
 
   function onReset() {
     form.reset();
@@ -75,10 +74,24 @@ export default function CapRateCalculator() {
 
   return (
     <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Property Details</h2>
+        <PDFDownloadLink 
+          document={<PropertyReport formData={formValues} results={results} />}
+          fileName="property-analysis.pdf"
+        >
+          {({ loading }) => (
+            <Button disabled={loading} variant="outline">
+              <FileDown className="mr-2 h-4 w-4" />
+              Export PDF
+            </Button>
+          )}
+        </PDFDownloadLink>
+      </div>
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Postcode Input */}
             <FormField
               control={form.control}
               name="postcode"
@@ -92,7 +105,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="purchasePrice"
@@ -106,7 +118,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="marketValue"
@@ -130,7 +141,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="monthlyRent"
@@ -144,7 +154,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="monthlyHoa"
@@ -158,7 +167,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="annualTaxes"
@@ -172,7 +180,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="annualInsurance"
@@ -186,7 +193,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="annualMaintenance"
@@ -200,7 +206,6 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="managementFees"
@@ -227,7 +232,6 @@ export default function CapRateCalculator() {
           </div>
 
           <div className="flex gap-4">
-            <Button type="submit">Save Property</Button>
             <Button type="button" variant="outline" onClick={onReset}>Reset</Button>
           </div>
         </form>
@@ -273,7 +277,6 @@ export default function CapRateCalculator() {
         </Card>
       </div>
 
-      {/* Comparable Properties Section */}
       {comparableProperties && comparableProperties.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Comparable Properties</h2>
@@ -297,10 +300,10 @@ export default function CapRateCalculator() {
                           calculateNOI(
                             Number(property.monthlyRent) * 12,
                             (Number(property.monthlyHoa) * 12) +
-                            Number(property.annualTaxes) +
-                            Number(property.annualInsurance) +
-                            Number(property.annualMaintenance) +
-                            Number(property.managementFees)
+                              Number(property.annualTaxes) +
+                              Number(property.annualInsurance) +
+                              Number(property.annualMaintenance) +
+                              Number(property.managementFees)
                           ),
                           Number(property.purchasePrice)
                         ))}
