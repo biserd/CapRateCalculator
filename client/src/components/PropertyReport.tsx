@@ -87,24 +87,37 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   riskSection: {
-    marginBottom: 20,
-    padding: 10,
+    marginTop: 10,
+    marginBottom: 15,
+    padding: 8,
     backgroundColor: '#f9fafb',
   },
   riskTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 8,
+    color: '#374151',
   },
   riskScore: {
     fontSize: 12,
-    marginBottom: 3,
+    marginBottom: 5,
+    color: '#1f2937',
   },
   riskDescription: {
     fontSize: 10,
     color: '#6B7280',
-    marginBottom: 5,
+    marginBottom: 8,
+    paddingLeft: 10,
   },
+  riskItem: {
+    marginBottom: 12,
+  },
+  riskCategoryTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#4B5563',
+  }
 });
 
 export function PropertyReport({ formData, results, comparableProperties, riskScores, overallRiskScore }: PropertyReportProps) {
@@ -250,30 +263,31 @@ export function PropertyReport({ formData, results, comparableProperties, riskSc
         {/* Risk Analysis */}
         {riskScores && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Risk Analysis</Text>
+            <Text style={styles.sectionTitle}>Property Risk Analysis</Text>
 
             <View style={styles.riskSection}>
-              <Text style={styles.riskTitle}>
-                Overall Risk Score: {overallRiskScore?.toFixed(1)}
-                {overallRiskScore && ` - ${
-                  overallRiskScore <= 3 ? "Low Risk" :
-                  overallRiskScore <= 6 ? "Moderate Risk" :
+              <Text style={styles.riskCategoryTitle}>Overall Risk Assessment</Text>
+              <Text style={styles.riskScore}>
+                Score: {overallRiskScore?.toFixed(1)} - {
+                  overallRiskScore && overallRiskScore <= 3 ? "Low Risk" :
+                  overallRiskScore && overallRiskScore <= 6 ? "Moderate Risk" :
                   "High Risk"
-                }`}
+                }
               </Text>
               <Text style={styles.riskDescription}>
-                {overallRiskScore && (
-                  overallRiskScore <= 3 ? "Favorable conditions with minimal concerns" :
-                  overallRiskScore <= 6 ? "Some concerns present but manageable" :
-                  "Significant concerns that need careful consideration"
-                )}
+                {overallRiskScore && overallRiskScore <= 3 ? 
+                  "This property shows favorable conditions with minimal concerns, indicating a stable investment opportunity with strong fundamentals." :
+                overallRiskScore && overallRiskScore <= 6 ?
+                  "The property has some manageable concerns that require monitoring. Consider implementing risk management strategies." :
+                  "This investment presents significant risks that need careful consideration and substantial risk mitigation strategies."
+                }
               </Text>
             </View>
 
             <View style={styles.riskSection}>
-              <Text style={styles.riskTitle}>Risk Factors Breakdown:</Text>
+              <Text style={styles.riskCategoryTitle}>Risk Factors Breakdown</Text>
               {Object.entries(riskScores).map(([key, value]) => (
-                <View key={key}>
+                <View key={key} style={styles.riskItem}>
                   <Text style={styles.riskScore}>
                     {key.replace(/([A-Z])/g, ' $1').trim()}: {value.toFixed(1)} - {
                       value <= 3 ? "Low Risk" :
@@ -282,12 +296,35 @@ export function PropertyReport({ formData, results, comparableProperties, riskSc
                     }
                   </Text>
                   <Text style={styles.riskDescription}>
-                    {
-                      key === "marketRisk" ? "Market volatility and trends analysis" :
-                      key === "financialRisk" ? "Cash flow stability and financial metrics" :
-                      key === "propertyCondition" ? "Property maintenance and repair needs" :
-                      key === "locationRisk" ? "Neighborhood and economic factors" :
-                      "Tenant quality and rental market conditions"
+                    {key === "marketRisk" && 
+                      "Evaluates market stability, price trends, and supply/demand balance in the area. " +
+                      (value <= 3 ? "Current market conditions are stable and favorable." :
+                       value <= 6 ? "Some market uncertainty exists but remains within acceptable range." :
+                       "High market volatility or unfavorable trends detected.")
+                    }
+                    {key === "financialRisk" && 
+                      "Assesses the property's financial performance metrics. " +
+                      (value <= 3 ? "Strong financial indicators with good cash flow potential." :
+                       value <= 6 ? "Acceptable financial performance with some areas needing attention." :
+                       "Significant financial concerns requiring immediate attention.")
+                    }
+                    {key === "propertyCondition" && 
+                      "Examines the physical state and maintenance requirements. " +
+                      (value <= 3 ? "Property is well-maintained with minimal repair needs." :
+                       value <= 6 ? "Some maintenance or updates may be required." :
+                       "Substantial repairs or renovations likely needed.")
+                    }
+                    {key === "locationRisk" && 
+                      "Considers neighborhood factors and economic indicators. " +
+                      (value <= 3 ? "Prime location with strong economic fundamentals." :
+                       value <= 6 ? "Acceptable location with some areas of concern." :
+                       "Location presents significant challenges or risks.")
+                    }
+                    {key === "tenantRisk" && 
+                      "Analyzes rental market conditions and tenant quality. " +
+                      (value <= 3 ? "Strong rental demand with quality tenant potential." :
+                       value <= 6 ? "Average rental market conditions." :
+                       "Challenging rental market or tenant concerns.")
                     }
                   </Text>
                 </View>
