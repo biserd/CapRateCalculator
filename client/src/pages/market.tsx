@@ -65,6 +65,38 @@ const nycZipCodes = {
   'Staten Island': ['10301', '10304', '10314']
 };
 
+// Add NYC zip code coordinates mapping
+const nycZipCodeCoordinates: Record<string, [number, number]> = {
+  // Manhattan
+  '10001': [40.7503, -73.9965], // Chelsea
+  '10002': [40.7168, -73.9861], // Lower East Side
+  '10003': [40.7335, -73.9905], // East Village
+  '10016': [40.7461, -73.9784], // Murray Hill
+  '10019': [40.7641, -73.9866], // Midtown West
+  '10021': [40.7695, -73.9633], // Upper East Side
+  '10025': [40.7989, -73.9680], // Upper West Side
+  // Brooklyn
+  '11201': [40.6935, -73.9916], // Brooklyn Heights
+  '11215': [40.6628, -73.9861], // Park Slope
+  '11217': [40.6829, -73.9790], // Boerum Hill
+  '11238': [40.6795, -73.9665], // Prospect Heights
+  '11249': [40.7138, -73.9613], // Williamsburg
+  // Queens
+  '11101': [40.7505, -73.9393], // Long Island City
+  '11106': [40.7621, -73.9320], // Astoria
+  '11354': [40.7680, -73.8279], // Flushing
+  '11375': [40.7210, -73.8458], // Forest Hills
+  // Bronx
+  '10451': [40.8200, -73.9256], // South Bronx
+  '10452': [40.8405, -73.9234], // West Bronx
+  '10453': [40.8518, -73.9120], // University Heights
+  '10456': [40.8297, -73.9065], // Morrisania
+  // Staten Island
+  '10301': [40.6424, -74.0987], // St. George
+  '10304': [40.6097, -74.0910], // Stapleton
+  '10314': [40.6090, -74.1468]  // Bulls Head
+};
+
 // New York City coordinates (Manhattan)
 const NYC_CENTER: [number, number] = [40.7128, -74.0060];
 
@@ -79,15 +111,22 @@ export default function MarketAnalysis() {
   // Transform property data for heat map
   const heatMapData: HeatMapDataPoint[] = properties ? properties.map((property, index) => {
     // If no coordinates are provided, distribute points across NYC zip codes
-    const spread = 0.01; // About 1km spread
+    const spread = 0.003; // Smaller spread for more concentrated points
 
-    // Use property's postcode if it matches NYC zip codes, otherwise distribute randomly
-    let baseLat = NYC_CENTER[0];
-    let baseLng = NYC_CENTER[1];
+    // Get all available zip codes
+    const allZipCodes = Object.values(nycZipCodes).flat();
 
+    // Use property's postcode if it matches NYC zip codes, otherwise use a random NYC zip code
+    const zipCode = allZipCodes.includes(property.postcode)
+      ? property.postcode
+      : allZipCodes[index % allZipCodes.length];
 
-    const lat = baseLat + (Math.random() - 0.5) * spread;
-    const lng = baseLng + (Math.random() - 0.5) * spread;
+    // Get base coordinates for the zip code
+    const baseCoords = nycZipCodeCoordinates[zipCode] || NYC_CENTER;
+
+    // Add some random spread around the base coordinates
+    const lat = baseCoords[0] + (Math.random() - 0.5) * spread;
+    const lng = baseCoords[1] + (Math.random() - 0.5) * spread;
 
     const noi = calculateNOI(
       Number(property.monthlyRent) * 12,

@@ -21,7 +21,7 @@ interface MarketDataPoint {
   capRate: number;
 }
 
-interface HeatMapProps {
+interface MarketHeatMapProps {
   center: [number, number];
   zoom?: number;
   dataPoints: MarketDataPoint[];
@@ -78,7 +78,7 @@ function HeatmapLayer({ dataPoints, metric }: { dataPoints: MarketDataPoint[], m
   return null;
 }
 
-export function MarketHeatMap({ center, zoom = 13, dataPoints }: HeatMapProps) {
+export function MarketHeatMap({ center, zoom = 11, dataPoints }: MarketHeatMapProps) {
   const [selectedMetric, setSelectedMetric] = useState<'price' | 'rent' | 'capRate'>('price');
 
   const metricLabels = {
