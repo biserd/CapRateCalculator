@@ -111,7 +111,7 @@ export default function MarketAnalysis() {
   // Transform property data for heat map
   const heatMapData: HeatMapDataPoint[] = properties ? properties.map((property, index) => {
     // If no coordinates are provided, distribute points across NYC zip codes
-    const spread = 0.003; // Smaller spread for more concentrated points
+    const spread = 0.001; // Reduced spread for better clustering
 
     // Get all available zip codes
     const allZipCodes = Object.values(nycZipCodes).flat();
@@ -258,7 +258,6 @@ export default function MarketAnalysis() {
             zoom={13}
             dataPoints={heatMapData}
           />
-
           <Card>
             <CardHeader>
               <CardTitle>Price Trends by Postcode</CardTitle>
@@ -290,7 +289,6 @@ export default function MarketAnalysis() {
               </div>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Cap Rate Distribution</CardTitle>

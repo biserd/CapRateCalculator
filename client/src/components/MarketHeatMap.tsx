@@ -87,6 +87,9 @@ export function MarketHeatMap({ center, zoom = 13, dataPoints }: MarketHeatMapPr
     capRate: 'Cap Rate'
   };
 
+  // Log data points for debugging
+  console.log('Heat map data points:', dataPoints);
+
   return (
     <Card>
       <CardHeader>
