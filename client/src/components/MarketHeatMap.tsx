@@ -91,7 +91,7 @@ export function MarketHeatMap({ center, zoom = 13, dataPoints }: HeatMapProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Market Heat Map</CardTitle>
+          <CardTitle>New York City Market Heat Map</CardTitle>
           <div className="flex items-center gap-4">
             <Select value={selectedMetric} onValueChange={(value: 'price' | 'rent' | 'capRate') => setSelectedMetric(value)}>
               <SelectTrigger className="w-[180px]">
