@@ -19,43 +19,6 @@ interface PropertyData {
   postcode: string;
 }
 
-function calculateAverages(properties: PropertyData[]): { avgPurchasePrice: number; avgMonthlyRent: number; avgCapRate: number } | null {
-  if (!properties?.length) return null;
-
-  const totals = properties.reduce((acc, property) => {
-    const noi = calculateNOI(
-      Number(property.monthlyRent) * 12,
-      (Number(property.monthlyHoa) * 12) +
-        Number(property.annualTaxes) +
-        Number(property.annualInsurance) +
-        Number(property.annualMaintenance) +
-        Number(property.managementFees)
-    );
-    const capRate = calculateCapRate(noi, Number(property.purchasePrice));
-
-    return {
-      purchasePrice: acc.purchasePrice + Number(property.purchasePrice),
-      monthlyRent: acc.monthlyRent + Number(property.monthlyRent),
-      capRate: acc.capRate + capRate,
-      count: acc.count + 1
-    };
-  }, { purchasePrice: 0, monthlyRent: 0, capRate: 0, count: 0 });
-
-  return {
-    avgPurchasePrice: totals.purchasePrice / totals.count,
-    avgMonthlyRent: totals.monthlyRent / totals.count,
-    avgCapRate: totals.capRate / totals.count
-  };
-}
-
-interface HeatMapDataPoint {
-  lat: number;
-  lng: number;
-  price: number;
-  rent: number;
-  capRate: number;
-}
-
 // Add NYC zip codes mapping for better data distribution
 const nycZipCodes = {
   'Manhattan': ['10001', '10002', '10003', '10016', '10019', '10021', '10025'],
@@ -99,6 +62,43 @@ const nycZipCodeCoordinates: Record<string, [number, number]> = {
 
 // New York City coordinates (Manhattan)
 const NYC_CENTER: [number, number] = [40.7128, -74.0060];
+
+function calculateAverages(properties: PropertyData[]): { avgPurchasePrice: number; avgMonthlyRent: number; avgCapRate: number } | null {
+  if (!properties?.length) return null;
+
+  const totals = properties.reduce((acc, property) => {
+    const noi = calculateNOI(
+      Number(property.monthlyRent) * 12,
+      (Number(property.monthlyHoa) * 12) +
+        Number(property.annualTaxes) +
+        Number(property.annualInsurance) +
+        Number(property.annualMaintenance) +
+        Number(property.managementFees)
+    );
+    const capRate = calculateCapRate(noi, Number(property.purchasePrice));
+
+    return {
+      purchasePrice: acc.purchasePrice + Number(property.purchasePrice),
+      monthlyRent: acc.monthlyRent + Number(property.monthlyRent),
+      capRate: acc.capRate + capRate,
+      count: acc.count + 1
+    };
+  }, { purchasePrice: 0, monthlyRent: 0, capRate: 0, count: 0 });
+
+  return {
+    avgPurchasePrice: totals.purchasePrice / totals.count,
+    avgMonthlyRent: totals.monthlyRent / totals.count,
+    avgCapRate: totals.capRate / totals.count
+  };
+}
+
+interface HeatMapDataPoint {
+  lat: number;
+  lng: number;
+  price: number;
+  rent: number;
+  capRate: number;
+}
 
 export default function MarketAnalysis() {
   const { data: properties } = useQuery({

@@ -78,7 +78,7 @@ function HeatmapLayer({ dataPoints, metric }: { dataPoints: MarketDataPoint[], m
   return null;
 }
 
-export function MarketHeatMap({ center, zoom = 11, dataPoints }: MarketHeatMapProps) {
+export function MarketHeatMap({ center, zoom = 13, dataPoints }: MarketHeatMapProps) {
   const [selectedMetric, setSelectedMetric] = useState<'price' | 'rent' | 'capRate'>('price');
 
   const metricLabels = {
