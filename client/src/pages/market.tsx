@@ -65,29 +65,36 @@ export default function MarketAnalysis() {
   const hasData = properties && properties.length > 0;
 
   // Transform property data for heat map
-  const heatMapData: HeatMapDataPoint[] = properties ? properties.map(property => ({
-    lat: property.latitude || 0, 
-    lng: property.longitude || 0,
-    price: Number(property.purchasePrice),
-    rent: Number(property.monthlyRent),
-    capRate: calculateCapRate(
-      calculateNOI(
-        Number(property.monthlyRent) * 12,
-        (Number(property.monthlyHoa) * 12) +
-          Number(property.annualTaxes) +
-          Number(property.annualInsurance) +
-          Number(property.annualMaintenance) +
-          Number(property.managementFees)
-      ),
-      Number(property.purchasePrice)
-    )
-  })) : [];
+  const heatMapData: HeatMapDataPoint[] = properties ? properties.map((property, index) => {
+    // If no coordinates are provided, generate a spread of points around the center
+    // This is temporary until real coordinates are available
+    const spread = 0.01; // About 1km spread
+    const lat = property.latitude || (51.505 + (Math.random() - 0.5) * spread);
+    const lng = property.longitude || (-0.09 + (Math.random() - 0.5) * spread);
 
-  // Center map on average coordinates of properties
+    const noi = calculateNOI(
+      Number(property.monthlyRent) * 12,
+      (Number(property.monthlyHoa) * 12) +
+        Number(property.annualTaxes) +
+        Number(property.annualInsurance) +
+        Number(property.annualMaintenance) +
+        Number(property.managementFees)
+    );
+
+    return {
+      lat,
+      lng,
+      price: Number(property.purchasePrice),
+      rent: Number(property.monthlyRent),
+      capRate: calculateCapRate(noi, Number(property.purchasePrice))
+    };
+  }) : [];
+
+  // Adjust the center calculation to use actual points
   const center: [number, number] = heatMapData.length > 0 ? [
     heatMapData.reduce((sum, point) => sum + point.lat, 0) / heatMapData.length,
     heatMapData.reduce((sum, point) => sum + point.lng, 0) / heatMapData.length,
-  ] : [51.505, -0.09];
+  ] : [51.505, -0.09]; // Default to London coordinates
 
   // Group properties by postcode for trend analysis
   interface TrendDataPoint {
