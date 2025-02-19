@@ -222,8 +222,7 @@ export default function CapRateCalculator() {
       )
     })) || [],
     riskScores,
-    overallRiskScore,
-    aiInsights: insights
+    overallRiskScore
   }), [formValues, results, comparableProperties, riskScores, overallRiskScore, insights]);
 
   return (
