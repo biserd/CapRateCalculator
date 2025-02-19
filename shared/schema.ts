@@ -40,6 +40,7 @@ export const sharedReports = pgTable("shared_reports", {
   id: serial("id").primaryKey(),
   shareId: text("share_id").notNull().unique(),
   propertyData: json("property_data").notNull(),
+  aiInsights: json("ai_insights"), // Added aiInsights field
   createdAt: timestamp("created_at").defaultNow().notNull(),
   expiresAt: timestamp("expires_at"),
 });
@@ -49,3 +50,11 @@ export const sharedReportInsertSchema = createInsertSchema(sharedReports)
 
 export type InsertSharedReport = z.infer<typeof sharedReportInsertSchema>;
 export type SharedReport = typeof sharedReports.$inferSelect;
+
+export const propertyData = pgTable('property_data', {
+  id: serial('id').primaryKey(),
+  formData: json('form_data'),
+  aiInsights: json('ai_insights'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});

@@ -202,6 +202,7 @@ export default function CapRateCalculator() {
 
   const reportData = useMemo(() => ({
     formData: formValues,
+    aiInsights: insights,
     results,
     comparableProperties: comparableProperties?.map((property: any) => ({
       purchasePrice: Number(property.purchasePrice),
