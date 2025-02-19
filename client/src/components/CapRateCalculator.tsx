@@ -16,6 +16,7 @@ import { RiskScoreVisualization } from "./RiskScoreVisualization";
 import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useEffect } from "react";
 
 export default function CapRateCalculator() {
   const { toast } = useToast();
@@ -34,6 +35,27 @@ export default function CapRateCalculator() {
       managementFees: ""
     }
   });
+
+  // Load shared report data if available
+  useEffect(() => {
+    const sharedReport = sessionStorage.getItem('sharedReport');
+    if (sharedReport) {
+      try {
+        const reportData = JSON.parse(sharedReport);
+        // Reset form with shared report data
+        form.reset(reportData);
+        // Clear the stored report data
+        sessionStorage.removeItem('sharedReport');
+      } catch (error) {
+        console.error('Error loading shared report:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load the shared report data.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [form, toast]);
 
   const { watch } = form;
   const formValues = watch();
