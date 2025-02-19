@@ -111,7 +111,7 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center space-y-4">
-            <p className="text-muted-foreground">Click the button below to generate AI insights for this property.</p>
+            <p className="text-muted-foreground">Generate AI-powered insights for this property investment.</p>
             <Button onClick={handleGenerateInsights} disabled={isLoading}>
               {isLoading ? "Generating..." : "Generate AI Insights"}
             </Button>
