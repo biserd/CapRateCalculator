@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, numeric, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, numeric, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -19,13 +19,13 @@ export type User = typeof users.$inferSelect;
 export const properties = pgTable("properties", {
   id: serial("id").primaryKey(),
   postcode: text("postcode").notNull(),
-  purchasePrice: numeric("purchase_price").notNull(),
+  purchasePrice: numeric("purchase_price"),
   marketValue: numeric("market_value"),
-  monthlyRent: numeric("monthly_rent").notNull(),
-  monthlyHoa: numeric("monthly_hoa").notNull(),
-  annualTaxes: numeric("annual_taxes").notNull(),
-  annualInsurance: numeric("annual_insurance").notNull(),
-  annualMaintenance: numeric("annual_maintenance").notNull(),
+  monthlyRent: numeric("monthly_rent"),
+  monthlyHoa: numeric("monthly_hoa"),
+  annualTaxes: numeric("annual_taxes"),
+  annualInsurance: numeric("annual_insurance"),
+  annualMaintenance: numeric("annual_maintenance"),
   managementFees: numeric("management_fees"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

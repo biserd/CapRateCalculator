@@ -10,7 +10,12 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async createProperty(property: InsertProperty): Promise<Property> {
-    const [created] = await db.insert(properties).values(property).returning();
+    // Filter out undefined values to let database use defaults
+    const cleanedProperty = Object.fromEntries(
+      Object.entries(property).filter(([_, value]) => value !== undefined && value !== "")
+    ) as InsertProperty;
+
+    const [created] = await db.insert(properties).values(cleanedProperty).returning();
     return created;
   }
 
