@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { propertyInsertSchema, sharedReportInsertSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
+import { generatePropertyInsights } from "./ai/property-insights";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/properties", async (req, res) => {
@@ -36,6 +37,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(properties);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch properties" });
+    }
+  });
+
+  // AI Property Insights endpoint
+  app.post("/api/properties/insights", async (req, res) => {
+    try {
+      const propertyDetails = req.body;
+      const insights = await generatePropertyInsights(propertyDetails);
+      res.json(insights);
+    } catch (error) {
+      console.error('Error generating property insights:', error);
+      res.status(500).json({ message: "Failed to generate property insights" });
     }
   });
 

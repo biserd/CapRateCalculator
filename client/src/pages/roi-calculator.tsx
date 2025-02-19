@@ -11,6 +11,7 @@ import { formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } 
 import { Metadata } from "@/components/Metadata";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InvestmentTools } from "@/components/InvestmentTools";
+import { PropertyInsights } from "@/components/PropertyInsights";
 
 const roiCalculatorSchema = z.object({
   // Property Details
@@ -42,12 +43,12 @@ type ROICalculatorData = z.infer<typeof roiCalculatorSchema>;
 function calculateMortgagePayment(loanAmount: number, annualRate: number, years: number): number {
   const monthlyRate = annualRate / 12 / 100;
   const numberOfPayments = years * 12;
-  return loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
-         (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+  return loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+    (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
 }
 
 function calculateTaxBenefits(
-  propertyValue: number, 
+  propertyValue: number,
   mortgageInterest: number,
   propertyTaxes: number,
   depreciation: number,
@@ -110,7 +111,7 @@ export default function ROICalculator() {
 
   return (
     <>
-      <Metadata 
+      <Metadata
         title="Advanced ROI Calculator"
         description="Calculate detailed return on investment for real estate properties including mortgage amortization, tax benefits, and renovation ROI."
         keywords="roi calculator, real estate investment, property returns, mortgage calculator, tax benefits, renovation roi"
@@ -123,11 +124,12 @@ export default function ROICalculator() {
           </div>
 
           <Tabs defaultValue="property">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="property">Property Details</TabsTrigger>
               <TabsTrigger value="mortgage">Mortgage</TabsTrigger>
               <TabsTrigger value="tax">Tax Benefits</TabsTrigger>
               <TabsTrigger value="renovation">Renovation ROI</TabsTrigger>
+              <TabsTrigger value="insights">AI Insights</TabsTrigger>
             </TabsList>
 
             <Card>
@@ -143,8 +145,8 @@ export default function ROICalculator() {
                             <FormItem>
                               <FormLabel>Purchase Price</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="$0.00" 
+                                <Input
+                                  placeholder="$0.00"
                                   {...field}
                                   value={field.value ? formatInputCurrency(field.value) : ''}
                                   onBlur={(e) => handleBlur(e, field)}
@@ -162,8 +164,8 @@ export default function ROICalculator() {
                             <FormItem>
                               <FormLabel>Renovation Costs</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="$0.00" 
+                                <Input
+                                  placeholder="$0.00"
                                   {...field}
                                   value={field.value ? formatInputCurrency(field.value) : ''}
                                   onBlur={(e) => handleBlur(e, field)}
@@ -181,8 +183,8 @@ export default function ROICalculator() {
                             <FormItem>
                               <FormLabel>Expected Monthly Rent</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="$0.00" 
+                                <Input
+                                  placeholder="$0.00"
                                   {...field}
                                   value={field.value ? formatInputCurrency(field.value) : ''}
                                   onBlur={(e) => handleBlur(e, field)}
@@ -200,8 +202,8 @@ export default function ROICalculator() {
                             <FormItem>
                               <FormLabel>Monthly Expenses</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="$0.00" 
+                                <Input
+                                  placeholder="$0.00"
                                   {...field}
                                   value={field.value ? formatInputCurrency(field.value) : ''}
                                   onBlur={(e) => handleBlur(e, field)}
@@ -411,8 +413,8 @@ export default function ROICalculator() {
                             <FormItem>
                               <FormLabel>Renovation Budget</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="$0.00" 
+                                <Input
+                                  placeholder="$0.00"
                                   {...field}
                                   value={field.value ? formatInputCurrency(field.value) : ''}
                                   onBlur={(e) => handleBlur(e, field)}
@@ -468,6 +470,22 @@ export default function ROICalculator() {
                           )}
                         />
                       </div>
+                    </TabsContent>
+                    <TabsContent value="insights">
+                      <PropertyInsights
+                        propertyDetails={{
+                          purchasePrice: Number(formValues.purchasePrice) || 0,
+                          monthlyRent: Number(formValues.monthlyRent) || 0,
+                          location: "San Francisco, CA", // This could be made dynamic with a location picker
+                          propertyType: "Residential",
+                          squareFootage: 1500, // These could be added to the form
+                          yearBuilt: 2000,
+                          bedrooms: 3,
+                          bathrooms: 2,
+                          propertyCondition: formValues.renovationType === "major" ? "Needs Renovation" :
+                            formValues.renovationType === "moderate" ? "Average" : "Good",
+                        }}
+                      />
                     </TabsContent>
                   </form>
                 </Form>
@@ -653,9 +671,9 @@ function calculateResults(formValues: ROICalculatorData) {
   const annualCashFlow = (monthlyRent - monthlyExpenses - monthlyMortgage) * 12;
   const cashOnCashReturn = (annualCashFlow / totalInvestment) * 100;
 
-  const futureValue = (purchasePrice + renovationValueAdd) * 
+  const futureValue = (purchasePrice + renovationValueAdd) *
     Math.pow(1 + propertyAppreciation / 100, holdingPeriod);
-  const totalReturn = (futureValue - totalInvestment) + 
+  const totalReturn = (futureValue - totalInvestment) +
     (annualCashFlow * holdingPeriod) +
     (totalTaxSavings * holdingPeriod);
   const totalROI = (totalReturn / totalInvestment) * 100;
