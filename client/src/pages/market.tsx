@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage } from "@/lib/calculators";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MarketHeatMap } from "@/components/MarketHeatMap";
+import { Metadata } from "@/components/Metadata";
 
 interface PropertyData {
   monthlyRent: string;
@@ -187,6 +188,12 @@ export default function MarketAnalysis() {
   }, []) : [];
 
   return (
+    <>
+      <Metadata 
+        title="Market Analysis"
+        description="Analyze real estate market trends, property values, and investment opportunities. Data-driven insights for your investment decisions."
+        keywords="real estate market analysis, property trends, investment opportunities"
+      />
     <div className="space-y-8 p-8">
       <div className="flex items-center gap-3 mb-6">
         <LineChartIcon className="h-8 w-8 text-primary" />
@@ -323,5 +330,6 @@ export default function MarketAnalysis() {
         </div>
       )}
     </div>
+    </>
   );
 }

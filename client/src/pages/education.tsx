@@ -2,8 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { Metadata } from "@/components/Metadata";
+
 export default function Education() {
   return (
+    <>
+      <Metadata 
+        title="Investment Education"
+        description="Learn real estate investment fundamentals, strategies, and key metrics. Comprehensive guide for both beginners and experienced investors."
+        keywords="real estate education, investment strategies, property investment guide"
+      />
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
