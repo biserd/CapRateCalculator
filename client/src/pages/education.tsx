@@ -8,7 +8,7 @@ export default function Education() {
   return (
     <>
       <Metadata 
-        title="Investment Education"
+        title="Real Estate Investment Education"
         description="Learn real estate investment fundamentals, strategies, and key metrics. Comprehensive guide for both beginners and experienced investors."
         keywords="real estate education, investment strategies, property analysis"
       />
@@ -16,7 +16,7 @@ export default function Education() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <GraduationCap className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight">Investment Education</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Real Estate Investment Education</h1>
           </div>
 
           <Tabs defaultValue="basics" className="space-y-6">

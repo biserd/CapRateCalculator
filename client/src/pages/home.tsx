@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Metadata 
-        title="Cap Rate Calculator"
+        title="Real Estate Cap Rate Calculator"
         description="Calculate real estate investment returns with our professional cap rate calculator. Make informed investment decisions with accurate property analysis."
         keywords="cap rate calculator, real estate investment, ROI calculator, property analysis"
       />
@@ -16,7 +16,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Building2 className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">Cap Rate Calculator</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Real Estate Cap Rate Calculator</h1>
         </div>
 
         <Card>
