@@ -25,7 +25,12 @@ export const propertyFormSchema = z.object({
   managementFees: z.string().refine(
     (val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0),
     "Must be a valid number greater than or equal to 0"
-  )
+  ),
+  squareFootage: z.number().default(1000),
+  yearBuilt: z.number().default(2000),
+  bedrooms: z.number().default(2),
+  bathrooms: z.number().default(2),
+  propertyCondition: z.enum(["needs_renovation", "usable", "perfect"]).default("usable")
 });
 
 export const loanCalculatorSchema = z.object({

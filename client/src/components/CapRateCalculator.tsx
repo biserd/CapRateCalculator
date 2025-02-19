@@ -10,6 +10,8 @@ import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage, parse
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { InfoIcon, FileDown, Share2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -119,7 +121,12 @@ export default function CapRateCalculator() {
       annualTaxes: "",
       annualInsurance: "",
       annualMaintenance: "",
-      managementFees: ""
+      managementFees: "",
+      sizeInSqFt: 1500,
+      yearBuilt: 2000,
+      bedrooms: 2,
+      bathrooms: 2,
+      propertyCondition: "usable"
     }
   });
 
@@ -187,11 +194,11 @@ export default function CapRateCalculator() {
           monthlyRent: Number(formValues.monthlyRent),
           location: formValues.postcode,
           propertyType: "residential",
-          squareFootage: 0,
-          yearBuilt: new Date().getFullYear(),
-          bedrooms: 0,
-          bathrooms: 0,
-          propertyCondition: "good"
+          squareFootage: formValues.sizeInSqFt,
+          yearBuilt: formValues.yearBuilt,
+          bedrooms: formValues.bedrooms,
+          bathrooms: formValues.bathrooms,
+          propertyCondition: formValues.propertyCondition
         }),
       });
       if (!response.ok) {
@@ -420,6 +427,80 @@ export default function CapRateCalculator() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="sizeInSqFt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Size (sq ft)</FormLabel>
+                  <FormControl>
+                    <Slider {...field} step={100} min={500} max={5000} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="yearBuilt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Year Built</FormLabel>
+                  <FormControl>
+                    <Slider {...field} step={1} min={1900} max={2024} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bedrooms"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bedrooms</FormLabel>
+                  <FormControl>
+                    <Slider {...field} step={1} min={1} max={10} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bathrooms"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bathrooms</FormLabel>
+                  <FormControl>
+                    <Slider {...field} step={1} min={1} max={10} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="propertyCondition"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Property Condition</FormLabel>
+                  <FormControl>
+                    <Select {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Condition" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="needs renovation">Needs Renovation</SelectItem>
+                        <SelectItem value="usable">Usable</SelectItem>
+                        <SelectItem value="perfect condition">Perfect Condition</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="flex gap-4">
             <Button type="button" variant="outline" onClick={onReset}>Reset</Button>
@@ -515,11 +596,11 @@ export default function CapRateCalculator() {
                 monthlyRent: Number(formValues.monthlyRent),
                 location: formValues.postcode,
                 propertyType: "residential",
-                squareFootage: 0,
-                yearBuilt: new Date().getFullYear(),
-                bedrooms: 0,
-                bathrooms: 0,
-                propertyCondition: "good"
+                squareFootage: formValues.sizeInSqFt,
+                yearBuilt: formValues.yearBuilt,
+                bedrooms: formValues.bedrooms,
+                bathrooms: formValues.bathrooms,
+                propertyCondition: formValues.propertyCondition
               }}
             />
           ) : (
