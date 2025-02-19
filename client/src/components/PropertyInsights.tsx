@@ -1,11 +1,10 @@
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 interface PropertyDetails {
   purchasePrice: number;
@@ -31,10 +30,17 @@ interface ValuationInsights {
 
 export function PropertyInsights({ propertyDetails }: { propertyDetails: PropertyDetails }) {
   const { toast } = useToast();
-  const [shouldGenerate, setShouldGenerate] = useState(false);
+  const [insights, setInsights] = useState<ValuationInsights | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  const { data: insights, isPending: isLoading, isError, mutate } = useMutation({
-    mutationFn: async () => {
+  const handleGenerateInsights = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    setError(false);
+    
+    try {
       const response = await fetch('/api/properties/insights', {
         method: 'POST',
         headers: {
@@ -48,20 +54,18 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
         throw new Error(errorData.message || 'Failed to fetch property insights');
       }
 
-      return response.json();
-    },
-    onError: () => {
+      const data = await response.json();
+      setInsights(data);
+    } catch (err) {
+      setError(true);
       toast({
         title: "Error",
         description: "Failed to generate property insights. Please try again later.",
         variant: "destructive",
       });
-    },
-  });
-
-  const handleGenerateInsights = () => {
-    if (isLoading) return;
-    mutate();
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -79,7 +83,7 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <Card>
         <CardHeader>
@@ -166,7 +170,9 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
           </div>
 
           <div className="flex justify-center pt-4">
-            <Button onClick={handleGenerateInsights}>Regenerate Insights</Button>
+            <Button onClick={handleGenerateInsights} disabled={isLoading}>
+              {isLoading ? "Generating..." : "Regenerate Insights"}
+            </Button>
           </div>
         </div>
       </CardContent>
