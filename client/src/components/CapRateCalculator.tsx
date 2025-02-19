@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { propertyFormSchema, type PropertyFormData } from "@/lib/validators";
 import { PropertyInsights } from "./PropertyInsights";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
@@ -20,8 +20,6 @@ import { RiskScoreVisualization } from "./RiskScoreVisualization";
 import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { useEffect, useMemo, memo } from "react";
-import { PropertyInsights } from "./PropertyInsights"; // Added import
 
 // New component for the action buttons
 function ActionButtons({
