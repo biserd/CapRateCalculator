@@ -20,21 +20,19 @@ import { apiRequest } from "@/lib/queryClient";
 export default function CapRateCalculator() {
   const { toast } = useToast();
 
-  const defaultValues = {
-    postcode: "",
-    purchasePrice: "750000",
-    marketValue: "800000",
-    monthlyRent: "3500",
-    monthlyHoa: "400",
-    annualTaxes: "9000",
-    annualInsurance: "2400",
-    annualMaintenance: "7500",
-    managementFees: "4200"
-  };
-
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertyFormSchema),
-    defaultValues
+    defaultValues: {
+      postcode: "",
+      purchasePrice: "",
+      marketValue: "",
+      monthlyRent: "",
+      monthlyHoa: "",
+      annualTaxes: "",
+      annualInsurance: "",
+      annualMaintenance: "",
+      managementFees: ""
+    }
   });
 
   const { watch } = form;
