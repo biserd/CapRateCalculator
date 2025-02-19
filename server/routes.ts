@@ -46,9 +46,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const propertyDetails = req.body;
       const insights = await generatePropertyInsights(propertyDetails);
       res.json(insights);
-    } catch (error) {
-      console.error('Error generating property insights:', error);
-      res.status(500).json({ message: "Failed to generate property insights" });
+    } catch (error: any) {
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        status: error.status,
+        response: error.response
+      };
+      console.error('Error generating property insights:', errorDetails);
+      res.status(500).json({ 
+        message: "Failed to generate property insights",
+        error: errorDetails
+      });
     }
   });
 
