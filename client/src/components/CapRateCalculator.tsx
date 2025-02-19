@@ -541,7 +541,7 @@ export default function CapRateCalculator() {
           </div>
           <div className="flex gap-4">
             <Button type="button" variant="outline" onClick={onReset}>Reset</Button>
-            <Button type="button" onClick={() => setShowInsights(true)}>Show Insights</Button> {/* Added button to trigger insights */}
+            <Button type="button" onClick={() => setShowInsights(true)}>Generate AI Insights</Button>
           </div>
         </form>
       </Form>
