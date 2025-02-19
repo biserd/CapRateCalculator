@@ -174,6 +174,7 @@ export default function CapRateCalculator() {
   };
 
   const [storedInsights, setStoredInsights] = useState(null);
+  const [showInsights, setShowInsights] = useState(false); // Added showInsights state
   const { data: insights } = useQuery({
     queryKey: ['/api/properties/insights', formValues],
     queryFn: async () => {
@@ -206,7 +207,7 @@ export default function CapRateCalculator() {
       }
       return response.json();
     },
-    enabled: Boolean(formValues.postcode && formValues.purchasePrice && formValues.monthlyRent),
+    enabled: Boolean(formValues.postcode && formValues.purchasePrice && formValues.monthlyRent && showInsights), //Conditional rendering of insights
   });
 
   const reportData = useMemo(() => ({
@@ -540,6 +541,7 @@ export default function CapRateCalculator() {
           </div>
           <div className="flex gap-4">
             <Button type="button" variant="outline" onClick={onReset}>Reset</Button>
+            <Button type="button" onClick={() => setShowInsights(true)}>Show Insights</Button> {/* Added button to trigger insights */}
           </div>
         </form>
       </Form>
@@ -625,7 +627,7 @@ export default function CapRateCalculator() {
       )}
       <div className="space-y-8 mt-8">
         <Card>
-          {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent ? (
+          {showInsights && formValues.postcode && formValues.purchasePrice && formValues.monthlyRent ? (
             <PropertyInsights
               propertyDetails={{
                 purchasePrice: Number(formValues.purchasePrice),
