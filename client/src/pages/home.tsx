@@ -18,7 +18,7 @@ export default function Home() {
           <Building2 className="h-8 w-8 text-primary" />
           <h1 className="text-3xl font-bold tracking-tight">Cap Rate Calculator</h1>
         </div>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Property Analysis</CardTitle>
@@ -29,5 +29,6 @@ export default function Home() {
         </Card>
       </div>
     </div>
+    </>
   );
 }

@@ -175,5 +175,6 @@ export default function Education() {
         </Tabs>
       </div>
     </div>
+    </>
   );
 }
