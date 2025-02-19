@@ -464,11 +464,6 @@ export default function CapRateCalculator() {
         </div>
       )}
       <div className="space-y-8 mt-8">
-        <RiskScoreVisualization
-          riskScores={riskScores}
-          overallScore={overallRiskScore}
-        />
-
         {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent && (
           <PropertyInsights
             propertyDetails={{
@@ -484,6 +479,11 @@ export default function CapRateCalculator() {
             }}
           />
         )}
+
+        <RiskScoreVisualization
+          riskScores={riskScores}
+          overallScore={overallRiskScore}
+        />
       </div>
     </div>
   );
