@@ -5,18 +5,23 @@ const numberString = z.string().refine(
   "Must be a valid number"
 );
 
+const optionalNumberString = z.string().refine(
+  (val) => val === "" || (!isNaN(Number(val)) && val !== ""),
+  "Must be a valid number"
+).optional();
+
 export const propertyFormSchema = z.object({
   postcode: z.string().min(1, "Postcode is required"),
-  purchasePrice: numberString,
+  purchasePrice: optionalNumberString,
   marketValue: z.string().refine(
     (val) => val === "" || (!isNaN(Number(val)) && Number(val) > 0),
     "Must be a valid number greater than 0"
   ),
-  monthlyRent: numberString,
-  monthlyHoa: numberString,
-  annualTaxes: numberString,
-  annualInsurance: numberString,
-  annualMaintenance: numberString,
+  monthlyRent: optionalNumberString,
+  monthlyHoa: optionalNumberString,
+  annualTaxes: optionalNumberString,
+  annualInsurance: optionalNumberString,
+  annualMaintenance: optionalNumberString,
   managementFees: z.string().refine(
     (val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0),
     "Must be a valid number greater than or equal to 0"
