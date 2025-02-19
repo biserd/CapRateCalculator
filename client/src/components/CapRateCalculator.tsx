@@ -432,7 +432,10 @@ export default function CapRateCalculator() {
               name="sizeInSqFt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Size (sq ft)</FormLabel>
+                  <FormLabel className="flex justify-between">
+                    Size (sq ft)
+                    <span className="text-muted-foreground">{field.value} sq ft</span>
+                  </FormLabel>
                   <FormControl>
                     <Slider 
                       value={[field.value]} 
@@ -451,7 +454,10 @@ export default function CapRateCalculator() {
               name="yearBuilt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Year Built</FormLabel>
+                  <FormLabel className="flex justify-between">
+                    Year Built
+                    <span className="text-muted-foreground">{field.value}</span>
+                  </FormLabel>
                   <FormControl>
                     <Slider 
                       value={[field.value]} 
@@ -470,7 +476,10 @@ export default function CapRateCalculator() {
               name="bedrooms"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bedrooms</FormLabel>
+                  <FormLabel className="flex justify-between">
+                    Bedrooms
+                    <span className="text-muted-foreground">{field.value} {field.value === 1 ? 'bedroom' : 'bedrooms'}</span>
+                  </FormLabel>
                   <FormControl>
                     <Slider 
                       value={[field.value]} 
@@ -489,7 +498,10 @@ export default function CapRateCalculator() {
               name="bathrooms"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bathrooms</FormLabel>
+                  <FormLabel className="flex justify-between">
+                    Bathrooms
+                    <span className="text-muted-foreground">{field.value} {field.value === 1 ? 'bathroom' : 'bathrooms'}</span>
+                  </FormLabel>
                   <FormControl>
                     <Slider 
                       value={[field.value]} 
