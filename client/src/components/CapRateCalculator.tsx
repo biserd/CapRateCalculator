@@ -462,11 +462,27 @@ export default function CapRateCalculator() {
           </div>
         </div>
       )}
-      <div className="mt-8">
+      <div className="space-y-8 mt-8">
         <RiskScoreVisualization
           riskScores={riskScores}
           overallScore={overallRiskScore}
         />
+        
+        {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent && (
+          <PropertyInsights
+            propertyDetails={{
+              purchasePrice: Number(formValues.purchasePrice),
+              monthlyRent: Number(formValues.monthlyRent),
+              location: formValues.postcode,
+              propertyType: "residential",
+              squareFootage: 0,
+              yearBuilt: new Date().getFullYear(),
+              bedrooms: 0,
+              bathrooms: 0,
+              propertyCondition: "good"
+            }}
+          />
+        )}
       </div>
     </div>
   );
