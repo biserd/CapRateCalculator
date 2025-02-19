@@ -78,18 +78,16 @@ export function MainNav() {
               {section.items.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <Link key={item.href} href={item.href}>
-                    <a
-                      className={cn(
-                        "flex items-center space-x-2 px-3 py-2 text-sm rounded-sm hover:bg-accent",
-                        location === item.href
-                          ? "text-primary bg-accent"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </a>
+                  <Link key={item.href} href={item.href}
+                    className={cn(
+                      "flex items-center space-x-2 px-3 py-2 text-sm rounded-sm hover:bg-accent",
+                      location === item.href
+                        ? "text-primary bg-accent"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.title}</span>
                   </Link>
                 );
               })}
