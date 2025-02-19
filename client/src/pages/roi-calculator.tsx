@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } from "@/lib/calculators";
 import { Metadata } from "@/components/Metadata";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InvestmentTools } from "@/components/InvestmentTools";
 
 const roiCalculatorSchema = z.object({
   // Property Details
@@ -603,6 +604,7 @@ export default function ROICalculator() {
               </CardContent>
             </Card>
           </Tabs>
+          <InvestmentTools />
         </div>
       </div>
     </>

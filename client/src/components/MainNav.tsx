@@ -6,79 +6,89 @@ import {
   DollarSign 
 } from "lucide-react";
 
+export const navItems = [
+  {
+    title: "Real Estate Analysis",
+    items: [
+      {
+        title: "Real Estate Cap Rate Calculator",
+        href: "/",
+        icon: Building2,
+        description: "Calculate capitalization rates and analyze property returns"
+      },
+      {
+        title: "ROI Calculator",
+        href: "/roi-calculator",
+        icon: DollarSign,
+        description: "Advanced ROI analysis with mortgage, tax benefits, and renovation calculations"
+      },
+      {
+        title: "Property Tax Calculator",
+        href: "/tax-calculator",
+        icon: Calculator,
+        description: "Estimate property taxes and assess tax implications"
+      },
+      {
+        title: "Real Estate Loan Calculator",
+        href: "/loan-calculator",
+        icon: Calculator,
+        description: "Calculate mortgage payments and loan amortization schedules"
+      },
+      {
+        title: "Property Comparison",
+        href: "/comparison",
+        icon: ChartBar,
+        description: "Compare multiple properties side by side"
+      },
+      {
+        title: "Real Estate Market Analysis",
+        href: "/market",
+        icon: LineChart,
+        description: "Analyze market trends and property valuations"
+      }
+    ]
+  },
+  {
+    title: "Real Estate Investment Tools",
+    items: [
+      {
+        title: "Location Analysis",
+        href: "/location",
+        icon: MapPin,
+        description: "Analyze neighborhoods and location metrics"
+      },
+      {
+        title: "Portfolio Dashboard",
+        href: "/portfolio",
+        icon: PieChart,
+        description: "Track and manage your property portfolio"
+      },
+      {
+        title: "Advanced Analysis",
+        href: "/advanced",
+        icon: TrendingUp,
+        description: "Deep dive into property investment metrics"
+      }
+    ]
+  },
+  {
+    title: "Education",
+    items: [
+      {
+        title: "Investment Guide",
+        href: "/education",
+        icon: GraduationCap,
+        description: "Learn about real estate investment strategies"
+      }
+    ]
+  }
+];
+
 export function MainNav() {
   const [location] = useLocation();
 
-  const navItems = [
-    {
-      title: "Real Estate Analysis",
-      items: [
-        {
-          title: "Real Estate Cap Rate Calculator",
-          href: "/",
-          icon: Building2
-        },
-        {
-          title: "ROI Calculator",
-          href: "/roi-calculator",
-          icon: DollarSign
-        },
-        {
-          title: "Property Tax Calculator",
-          href: "/tax-calculator",
-          icon: Calculator
-        },
-        {
-          title: "Real Estate Loan Calculator",
-          href: "/loan-calculator",
-          icon: Calculator
-        },
-        {
-          title: "Property Comparison",
-          href: "/comparison",
-          icon: ChartBar
-        },
-        {
-          title: "Real Estate Market Analysis",
-          href: "/market",
-          icon: LineChart
-        }
-      ]
-    },
-    {
-      title: "Real Estate Investment Tools",
-      items: [
-        {
-          title: "Location Analysis",
-          href: "/location",
-          icon: MapPin
-        },
-        {
-          title: "Portfolio Dashboard",
-          href: "/portfolio",
-          icon: PieChart
-        },
-        {
-          title: "Advanced Analysis",
-          href: "/advanced",
-          icon: TrendingUp
-        }
-      ]
-    },
-    {
-      title: "Education",
-      items: [
-        {
-          title: "Investment Guide",
-          href: "/education",
-          icon: GraduationCap
-        }
-      ]
-    }
-  ];
-
   return (
-    <nav className="flex items-center space-x-6">
+    <nav className="flex items-center space-x-6 pl-6">
       {navItems.map((section) => (
         <div key={section.title} className="relative group">
           <span className="text-sm font-medium text-muted-foreground cursor-default">
