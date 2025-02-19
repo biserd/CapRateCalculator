@@ -2,7 +2,8 @@ import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { 
   Building2, Calculator, ChartBar, LineChart, 
-  MapPin, PieChart, TrendingUp, GraduationCap 
+  MapPin, PieChart, TrendingUp, GraduationCap,
+  DollarSign 
 } from "lucide-react";
 
 export function MainNav() {
@@ -16,6 +17,11 @@ export function MainNav() {
           title: "Real Estate Cap Rate Calculator",
           href: "/",
           icon: Building2
+        },
+        {
+          title: "ROI Calculator",
+          href: "/roi-calculator",
+          icon: DollarSign
         },
         {
           title: "Real Estate Loan Calculator",
