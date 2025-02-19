@@ -434,7 +434,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Size (sq ft)</FormLabel>
                   <FormControl>
-                    <Slider {...field} step={100} min={500} max={5000} />
+                    <Slider 
+                      value={[field.value]} 
+                      onValueChange={([value]) => field.onChange(value)}
+                      step={100} 
+                      min={500} 
+                      max={5000} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -447,7 +453,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Year Built</FormLabel>
                   <FormControl>
-                    <Slider {...field} step={1} min={1900} max={2024} />
+                    <Slider 
+                      value={[field.value]} 
+                      onValueChange={([value]) => field.onChange(value)}
+                      step={1} 
+                      min={1900} 
+                      max={2024} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
