@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface PropertyDetails {
   purchasePrice: number;
@@ -27,8 +28,8 @@ interface ValuationInsights {
 
 export function PropertyInsights({ propertyDetails }: { propertyDetails: PropertyDetails }) {
   const { toast } = useToast();
-  
-  const { data: insights, isLoading, error } = useQuery<ValuationInsights>({
+
+  const { data: insights, isLoading, error, isError } = useQuery<ValuationInsights>({
     queryKey: ['/api/properties/insights', propertyDetails],
     queryFn: async () => {
       const response = await fetch('/api/properties/insights', {
@@ -38,15 +39,17 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
         },
         body: JSON.stringify(propertyDetails),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch property insights');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch property insights');
       }
-      
+
       return response.json();
     },
     enabled: Boolean(propertyDetails),
-    onError: (error) => {
+    retry: false,
+    onError: () => {
       toast({
         title: "Error",
         description: "Failed to generate property insights. Please try again later.",
@@ -70,7 +73,27 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
     );
   }
 
-  if (error || !insights) {
+  if (isError) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>AI Property Insights</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              Unable to generate AI insights at this time. This could be due to service limitations or high demand.
+              Please try again later.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!insights) {
     return null;
   }
 

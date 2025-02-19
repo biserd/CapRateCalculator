@@ -76,6 +76,10 @@ Format the response as a JSON object with the following structure:
       response_format: { type: "json_object" }
     });
 
+    if (!response.choices[0].message.content) {
+      throw new Error('No content in OpenAI response');
+    }
+
     const result = JSON.parse(response.choices[0].message.content);
     return result as ValuationInsights;
   } catch (error) {
