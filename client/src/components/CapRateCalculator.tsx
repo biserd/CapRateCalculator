@@ -464,21 +464,30 @@ export default function CapRateCalculator() {
         </div>
       )}
       <div className="space-y-8 mt-8">
-        {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent && (
-          <PropertyInsights
-            propertyDetails={{
-              purchasePrice: Number(formValues.purchasePrice),
-              monthlyRent: Number(formValues.monthlyRent),
-              location: formValues.postcode,
-              propertyType: "residential",
-              squareFootage: 0,
-              yearBuilt: new Date().getFullYear(),
-              bedrooms: 0,
-              bathrooms: 0,
-              propertyCondition: "good"
-            }}
-          />
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Property Insights</CardTitle>
+          </CardHeader>
+          {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent ? (
+            <PropertyInsights
+              propertyDetails={{
+                purchasePrice: Number(formValues.purchasePrice),
+                monthlyRent: Number(formValues.monthlyRent),
+                location: formValues.postcode,
+                propertyType: "residential",
+                squareFootage: 0,
+                yearBuilt: new Date().getFullYear(),
+                bedrooms: 0,
+                bathrooms: 0,
+                propertyCondition: "good"
+              }}
+            />
+          ) : (
+            <CardContent>
+              <p className="text-muted-foreground">Enter property details above to see AI-powered insights.</p>
+            </CardContent>
+          )}
+        </Card>
 
         <RiskScoreVisualization
           riskScores={riskScores}
