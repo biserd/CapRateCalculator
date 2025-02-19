@@ -3,8 +3,9 @@ import { Calculator } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } from "@/lib/calculators";
 import { Metadata } from "@/components/Metadata";
@@ -14,8 +15,8 @@ const roiCalculatorSchema = z.object({
   renovationCosts: z.string(),
   monthlyRent: z.string().min(1, "Monthly rent is required"),
   monthlyExpenses: z.string(),
-  propertyAppreciation: z.string().min(1, "Property appreciation rate is required"),
-  holdingPeriod: z.string().min(1, "Holding period is required"),
+  propertyAppreciation: z.number().min(0).max(15),
+  holdingPeriod: z.number().min(1).max(30),
 });
 
 type ROICalculatorData = z.infer<typeof roiCalculatorSchema>;
@@ -28,14 +29,14 @@ export default function ROICalculator() {
       renovationCosts: "",
       monthlyRent: "",
       monthlyExpenses: "",
-      propertyAppreciation: "3",
-      holdingPeriod: "5",
+      propertyAppreciation: 3,
+      holdingPeriod: 5,
     }
   });
 
   const { watch } = form;
   const formValues = watch();
-  
+
   const results = calculateResults(formValues);
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>, field: any) => {
@@ -148,8 +149,22 @@ export default function ROICalculator() {
                         <FormItem>
                           <FormLabel>Annual Appreciation Rate (%)</FormLabel>
                           <FormControl>
-                            <Input placeholder="3" {...field} />
+                            <div className="flex flex-col space-y-2">
+                              <Slider
+                                value={[field.value]}
+                                onValueChange={([value]) => field.onChange(value)}
+                                max={15}
+                                min={0}
+                                step={0.1}
+                              />
+                              <div className="text-sm text-muted-foreground">
+                                {field.value}%
+                              </div>
+                            </div>
                           </FormControl>
+                          <FormDescription>
+                            Typical range: 2-5% annually
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -161,8 +176,22 @@ export default function ROICalculator() {
                         <FormItem>
                           <FormLabel>Holding Period (Years)</FormLabel>
                           <FormControl>
-                            <Input placeholder="5" {...field} />
+                            <div className="flex flex-col space-y-2">
+                              <Slider
+                                value={[field.value]}
+                                onValueChange={([value]) => field.onChange(value)}
+                                max={30}
+                                min={1}
+                                step={1}
+                              />
+                              <div className="text-sm text-muted-foreground">
+                                {field.value} {field.value === 1 ? 'year' : 'years'}
+                              </div>
+                            </div>
                           </FormControl>
+                          <FormDescription>
+                            Typical investment horizon: 5-10 years
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -225,8 +254,8 @@ function calculateResults(formValues: ROICalculatorData) {
   const renovationCosts = Number(formValues.renovationCosts) || 0;
   const monthlyRent = Number(formValues.monthlyRent) || 0;
   const monthlyExpenses = Number(formValues.monthlyExpenses) || 0;
-  const propertyAppreciation = Number(formValues.propertyAppreciation) || 0;
-  const holdingPeriod = Number(formValues.holdingPeriod) || 0;
+  const propertyAppreciation = formValues.propertyAppreciation;
+  const holdingPeriod = formValues.holdingPeriod;
 
   const totalInvestment = purchasePrice + renovationCosts;
   const annualCashFlow = (monthlyRent - monthlyExpenses) * 12;
