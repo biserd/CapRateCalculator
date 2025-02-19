@@ -1,3 +1,4 @@
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -40,7 +41,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Property Insights endpoint
   app.post("/api/properties/insights", async (req, res) => {
     try {
       const propertyDetails = req.body;
@@ -52,13 +52,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Share report endpoint
   app.post("/api/reports/share", async (req, res) => {
     try {
       const report = await storage.createSharedReport({
-        propertyData: req.body.propertyData,
-        aiInsights: req.body.aiInsights,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        propertyData: {
+          ...req.body.propertyData,
+          aiInsights: req.body.propertyData.aiInsights
+        },
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
       });
       res.json({ shareId: report.shareId });
     } catch (error) {
@@ -67,7 +68,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get shared report endpoint
   app.get("/api/reports/share/:shareId", async (req, res) => {
     try {
       const report = await storage.getSharedReport(req.params.shareId);
@@ -75,7 +75,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Report not found" });
       }
 
-      // Check if report has expired
       if (report.expiresAt && new Date(report.expiresAt) < new Date()) {
         return res.status(410).json({ message: "Report has expired" });
       }
