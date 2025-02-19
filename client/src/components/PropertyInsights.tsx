@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useMemo } from "react";
 
 interface PropertyDetails {
   purchasePrice: number;
@@ -29,8 +30,22 @@ interface ValuationInsights {
 export function PropertyInsights({ propertyDetails }: { propertyDetails: PropertyDetails }) {
   const { toast } = useToast();
 
-  const { data: insights, isLoading, error, isError } = useQuery<ValuationInsights>({
-    queryKey: ['/api/properties/insights', propertyDetails],
+  const debouncedDetails = useMemo(() => {
+    return propertyDetails;
+  }, [
+    Math.round(propertyDetails.purchasePrice / 1000) * 1000,
+    Math.round(propertyDetails.monthlyRent / 100) * 100,
+    propertyDetails.location,
+    propertyDetails.propertyType,
+    Math.round(propertyDetails.squareFootage / 100) * 100,
+    propertyDetails.yearBuilt,
+    propertyDetails.bedrooms,
+    propertyDetails.bathrooms,
+    propertyDetails.propertyCondition,
+  ]);
+
+  const { data: insights, isLoading, isError } = useQuery({
+    queryKey: ['/api/properties/insights', debouncedDetails],
     queryFn: async () => {
       const response = await fetch('/api/properties/insights', {
         method: 'POST',
