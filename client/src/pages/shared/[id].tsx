@@ -10,6 +10,13 @@ export default function SharedReport() {
 
   const { data: report, isLoading, error } = useQuery({
     queryKey: ["/api/reports/share", id],
+    queryFn: async () => {
+      const response = await fetch(`/api/reports/share/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch report');
+      }
+      return response.json();
+    },
     enabled: Boolean(id),
   });
 
