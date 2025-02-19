@@ -36,7 +36,6 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
   const { data: insights, isLoading, isError, refetch } = useQuery({
     queryKey: ['/api/properties/insights', propertyDetails],
     queryFn: async () => {
-      if (isLoading) return null;
       const response = await fetch('/api/properties/insights', {
         method: 'POST',
         headers: {
@@ -52,8 +51,10 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
 
       return response.json();
     },
-    enabled: shouldGenerate,
+    enabled: false,
     retry: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
     onError: () => {
       toast({
         title: "Error",
@@ -63,9 +64,9 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
     },
   });
 
-  const handleGenerateInsights = () => {
-    setShouldGenerate(true);
-    refetch();
+  const handleGenerateInsights = async () => {
+    if (isLoading) return;
+    await refetch();
   };
 
   if (isLoading) {
