@@ -16,92 +16,28 @@ import { RiskScoreVisualization } from "./RiskScoreVisualization";
 import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, memo } from "react";
 
-export default function CapRateCalculator() {
-  const { toast } = useToast();
-
-  const form = useForm<PropertyFormData>({
-    resolver: zodResolver(propertyFormSchema),
-    defaultValues: {
-      postcode: "",
-      purchasePrice: "",
-      marketValue: "",
-      monthlyRent: "",
-      monthlyHoa: "",
-      annualTaxes: "",
-      annualInsurance: "",
-      annualMaintenance: "",
-      managementFees: ""
-    }
-  });
-
-  // Load shared report data if available
-  useEffect(() => {
-    const sharedReport = sessionStorage.getItem('sharedReport');
-    if (sharedReport) {
-      try {
-        const reportData = JSON.parse(sharedReport);
-        form.reset(reportData);
-        sessionStorage.removeItem('sharedReport');
-      } catch (error) {
-        console.error('Error loading shared report:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load the shared report data.",
-          variant: "destructive",
-        });
-      }
-    }
-  }, [form, toast]);
-
-  const { watch } = form;
-  const formValues = watch();
-  const postcode = watch("postcode");
-
-  // Fetch comparable properties
-  const { data: comparableProperties } = useQuery({
-    queryKey: ["/api/properties/postcode", postcode],
-    enabled: Boolean(postcode),
-  });
-
-  const results = useMemo(() => calculateResults(formValues), [formValues]);
-  const riskScores = useMemo(() => calculateRiskScores(formValues, comparableProperties), [formValues, comparableProperties]);
-  const overallRiskScore = useMemo(() => calculateOverallRiskScore(riskScores), [riskScores]);
-
-  function onReset() {
-    form.reset();
-  }
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, field: any) => {
-    const formatted = formatInputCurrency(e.target.value);
-    field.onChange(parseCurrency(formatted));
+// New component for the action buttons
+function ActionButtons({
+  postcode,
+  reportData,
+}: {
+  postcode: string;
+  reportData: {
+    formData: PropertyFormData;
+    results: ReturnType<typeof calculateResults>;
+    comparableProperties: any[];
+    riskScores: any;
+    overallRiskScore: number;
   };
+}) {
+  const { toast } = useToast();
 
   const shareMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/reports/share", {
-        propertyData: {
-          formData: formValues,
-          results,
-          comparableProperties: comparableProperties?.map((property: any) => ({
-            purchasePrice: Number(property.purchasePrice),
-            monthlyRent: Number(property.monthlyRent),
-            capRate: calculateCapRate(
-              calculateNOI(
-                Number(property.monthlyRent) * 12,
-                (Number(property.monthlyHoa) * 12) +
-                  Number(property.annualTaxes) +
-                  Number(property.annualInsurance) +
-                  Number(property.annualMaintenance) +
-                  Number(property.managementFees)
-              ),
-              Number(property.purchasePrice)
-            )
-          })),
-          riskScores,
-          overallRiskScore
-        }
+        propertyData: reportData
       });
       const data = await response.json();
       return data.shareId;
@@ -129,33 +65,17 @@ export default function CapRateCalculator() {
     }
   });
 
-  // Memoize the PropertyReport component to prevent unnecessary re-renders
   const propertyReport = useMemo(() => (
     <PropertyReport
-      formData={formValues}
-      results={results}
-      comparableProperties={comparableProperties?.map((property: any) => ({
-        purchasePrice: Number(property.purchasePrice),
-        monthlyRent: Number(property.monthlyRent),
-        capRate: calculateCapRate(
-          calculateNOI(
-            Number(property.monthlyRent) * 12,
-            (Number(property.monthlyHoa) * 12) +
-              Number(property.annualTaxes) +
-              Number(property.annualInsurance) +
-              Number(property.annualMaintenance) +
-              Number(property.managementFees)
-          ),
-          Number(property.purchasePrice)
-        )
-      }))}
-      riskScores={riskScores}
-      overallRiskScore={overallRiskScore}
+      formData={reportData.formData}
+      results={reportData.results}
+      comparableProperties={reportData.comparableProperties}
+      riskScores={reportData.riskScores}
+      overallRiskScore={reportData.overallRiskScore}
     />
-  ), [formValues, results, comparableProperties, riskScores, overallRiskScore]);
+  ), [reportData]);
 
-  // Memoize the action buttons
-  const actionButtons = useMemo(() => (
+  return (
     <div className="flex gap-2">
       <Button
         onClick={() => shareMutation.mutate()}
@@ -177,13 +97,95 @@ export default function CapRateCalculator() {
         )}
       </PDFDownloadLink>
     </div>
-  ), [postcode, shareMutation.isPending, shareMutation.mutate, propertyReport]);
+  );
+}
+
+const MemoizedActionButtons = memo(ActionButtons);
+
+export default function CapRateCalculator() {
+  const { toast } = useToast();
+  const form = useForm<PropertyFormData>({
+    resolver: zodResolver(propertyFormSchema),
+    defaultValues: {
+      postcode: "",
+      purchasePrice: "",
+      marketValue: "",
+      monthlyRent: "",
+      monthlyHoa: "",
+      annualTaxes: "",
+      annualInsurance: "",
+      annualMaintenance: "",
+      managementFees: ""
+    }
+  });
+
+  const { watch } = form;
+  const formValues = watch();
+  const postcode = watch("postcode");
+
+  const { data: comparableProperties } = useQuery({
+    queryKey: ["/api/properties/postcode", postcode],
+    enabled: Boolean(postcode),
+  });
+
+  const results = useMemo(() => calculateResults(formValues), [formValues]);
+  const riskScores = useMemo(() => calculateRiskScores(formValues, comparableProperties), [formValues, comparableProperties]);
+  const overallRiskScore = useMemo(() => calculateOverallRiskScore(riskScores), [riskScores]);
+
+  useEffect(() => {
+    const sharedReport = sessionStorage.getItem('sharedReport');
+    if (sharedReport) {
+      try {
+        const reportData = JSON.parse(sharedReport);
+        form.reset(reportData);
+        sessionStorage.removeItem('sharedReport');
+      } catch (error) {
+        console.error('Error loading shared report:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load the shared report data.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [form, toast]);
+
+  function onReset() {
+    form.reset();
+  }
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, field: any) => {
+    const formatted = formatInputCurrency(e.target.value);
+    field.onChange(parseCurrency(formatted));
+  };
+
+  const reportData = useMemo(() => ({
+    formData: formValues,
+    results,
+    comparableProperties: comparableProperties?.map((property: any) => ({
+      purchasePrice: Number(property.purchasePrice),
+      monthlyRent: Number(property.monthlyRent),
+      capRate: calculateCapRate(
+        calculateNOI(
+          Number(property.monthlyRent) * 12,
+          (Number(property.monthlyHoa) * 12) +
+            Number(property.annualTaxes) +
+            Number(property.annualInsurance) +
+            Number(property.annualMaintenance) +
+            Number(property.managementFees)
+        ),
+        Number(property.purchasePrice)
+      )
+    })) || [],
+    riskScores,
+    overallRiskScore
+  }), [formValues, results, comparableProperties, riskScores, overallRiskScore]);
 
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Property Details</h2>
-        {actionButtons}
+        <MemoizedActionButtons postcode={postcode} reportData={reportData} />
       </div>
 
       <Form {...form}>
