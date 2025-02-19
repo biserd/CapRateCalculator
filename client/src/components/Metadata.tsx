@@ -4,23 +4,15 @@ import { Helmet } from 'react-helmet-async';
 interface MetadataProps {
   title: string;
   description: string;
-  keywords?: string;
-  canonical?: string;
+  keywords: string;
 }
 
-export function Metadata({ title, description, keywords, canonical }: MetadataProps) {
-  const siteTitle = `${title} | Real Estate Investment Analysis`;
-  
+export function Metadata({ title, description, keywords }: MetadataProps) {
   return (
     <Helmet>
-      <title>{siteTitle}</title>
+      <title>{title} | Cap Rate Calculator</title>
       <meta name="description" content={description} />
-      {keywords && <meta name="keywords" content={keywords} />}
-      {canonical && <link rel="canonical" href={canonical} />}
-      <meta property="og:title" content={siteTitle} />
-      <meta property="og:description" content={description} />
-      <meta name="twitter:title" content={siteTitle} />
-      <meta name="twitter:description" content={description} />
+      <meta name="keywords" content={keywords} />
     </Helmet>
   );
 }
