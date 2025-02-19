@@ -55,6 +55,9 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
     retry: false,
     staleTime: Infinity,
     cacheTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     onError: () => {
       toast({
         title: "Error",
