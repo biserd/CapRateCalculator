@@ -65,6 +65,10 @@ Format the response as a JSON object with the following structure:
 }`;
 
   try {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key is not configured');
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -77,17 +81,29 @@ Format the response as a JSON object with the following structure:
           content: prompt
         }
       ],
+      temperature: 0.7,
+      max_tokens: 1000,
       response_format: { type: "json_object" }
     });
 
-    if (!response.choices[0].message.content) {
-      throw new Error('No content in OpenAI response');
+    if (!response.choices[0]?.message?.content) {
+      throw new Error('Invalid or empty OpenAI response');
     }
 
     const result = JSON.parse(response.choices[0].message.content);
     return result as ValuationInsights;
-  } catch (error) {
-    console.error('Error generating property insights:', error);
-    throw new Error('Failed to generate property insights');
+  } catch (error: any) {
+    console.error('Detailed error generating property insights:', {
+      message: error.message,
+      status: error.status,
+      response: error.response,
+      stack: error.stack
+    });
+    
+    if (error.message.includes('insufficient_quota')) {
+      throw new Error('OpenAI API quota exceeded. Please check your API key and billing status.');
+    }
+    
+    throw new Error(`Failed to generate property insights: ${error.message}`);
   }
 }
