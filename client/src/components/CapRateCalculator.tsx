@@ -75,6 +75,7 @@ function ActionButtons({
       comparableProperties={reportData.comparableProperties}
       riskScores={reportData.riskScores}
       overallRiskScore={reportData.overallRiskScore}
+      aiInsights={reportData.aiInsights}
     />
   ), [reportData]);
 
