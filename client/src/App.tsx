@@ -7,6 +7,7 @@ import { MainNav } from "@/components/MainNav";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ROICalculator from "@/pages/roi-calculator";
+import TaxCalculator from "@/pages/tax-calculator";
 import LoanCalculator from "@/pages/loan-calculator";
 import PropertyComparison from "@/pages/comparison";
 import MarketAnalysis from "@/pages/market";
@@ -34,6 +35,7 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/roi-calculator" component={ROICalculator} />
+        <Route path="/tax-calculator" component={TaxCalculator} />
         <Route path="/loan-calculator" component={LoanCalculator} />
         <Route path="/comparison" component={PropertyComparison} />
         <Route path="/market" component={MarketAnalysis} />

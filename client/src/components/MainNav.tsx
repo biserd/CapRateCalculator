@@ -24,6 +24,11 @@ export function MainNav() {
           icon: DollarSign
         },
         {
+          title: "Property Tax Calculator",
+          href: "/tax-calculator",
+          icon: Calculator
+        },
+        {
           title: "Real Estate Loan Calculator",
           href: "/loan-calculator",
           icon: Calculator
