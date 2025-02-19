@@ -160,6 +160,37 @@ export default function CapRateCalculator() {
     field.onChange(parseCurrency(formatted));
   };
 
+  const { data: insights } = useQuery({
+    queryKey: ['/api/properties/insights', formValues],
+    queryFn: async () => {
+      if (!formValues.postcode || !formValues.purchasePrice || !formValues.monthlyRent) {
+        return null;
+      }
+      const response = await fetch('/api/properties/insights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          purchasePrice: Number(formValues.purchasePrice),
+          monthlyRent: Number(formValues.monthlyRent),
+          location: formValues.postcode,
+          propertyType: "residential",
+          squareFootage: 0,
+          yearBuilt: new Date().getFullYear(),
+          bedrooms: 0,
+          bathrooms: 0,
+          propertyCondition: "good"
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch property insights');
+      }
+      return response.json();
+    },
+    enabled: Boolean(formValues.postcode && formValues.purchasePrice && formValues.monthlyRent),
+  });
+
   const reportData = useMemo(() => ({
     formData: formValues,
     results,
