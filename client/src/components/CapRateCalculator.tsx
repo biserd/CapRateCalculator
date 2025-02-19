@@ -460,7 +460,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Bedrooms</FormLabel>
                   <FormControl>
-                    <Slider {...field} step={1} min={1} max={10} />
+                    <Slider 
+                      value={[field.value]} 
+                      onValueChange={([value]) => field.onChange(value)}
+                      step={1} 
+                      min={1} 
+                      max={10} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -473,7 +479,13 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Bathrooms</FormLabel>
                   <FormControl>
-                    <Slider {...field} step={1} min={1} max={10} />
+                    <Slider 
+                      value={[field.value]} 
+                      onValueChange={([value]) => field.onChange(value)}
+                      step={1} 
+                      min={1} 
+                      max={10} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
