@@ -1,8 +1,12 @@
 import OpenAI from "openai";
 
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024
-// do not change this unless explicitly requested by the user
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ 
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://api.openai.com/v1',
+  apiVersion: '2024-02-15',
+  maxRetries: 3,
+  timeout: 30000
+});
 
 interface PropertyDetails {
   purchasePrice: number;
@@ -62,7 +66,7 @@ Format the response as a JSON object with the following structure:
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
