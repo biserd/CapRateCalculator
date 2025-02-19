@@ -57,6 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const report = await storage.createSharedReport({
         propertyData: req.body.propertyData,
+        aiInsights: req.body.aiInsights,
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
       });
       res.json({ shareId: report.shareId });
