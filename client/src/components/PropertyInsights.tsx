@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -103,6 +103,10 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
     );
   }
 
+  useEffect(() => {
+    handleGenerateInsights();
+  }, []);
+
   if (!insights) {
     return (
       <Card>
@@ -112,7 +116,7 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
         <CardContent>
           <div className="flex flex-col items-center justify-center space-y-4">
             <p className="text-muted-foreground">Generating AI-powered insights for this property investment...</p>
-            {isLoading && <Loader2 className="h-8 w-8 animate-spin text-primary" />}
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         </CardContent>
       </Card>
