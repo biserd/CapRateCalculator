@@ -46,7 +46,11 @@ export default function PropertyComparison() {
         <Alert className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Compare your properties' performance. Add properties using the Cap Rate Calculator to see the comparison.
+            To add properties for comparison:
+            1. Go to the Cap Rate Calculator (home page)
+            2. Enter your property details (purchase price, rent, expenses)
+            3. Save the property
+            4. Add more properties to compare them here
           </AlertDescription>
         </Alert>
 
@@ -54,7 +58,7 @@ export default function PropertyComparison() {
           <Card className="mb-6">
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">
-                <p>No property data available. Add properties using the Cap Rate Calculator to see comparisons.</p>
+                <p>No property data available. Start by adding properties using the Cap Rate Calculator on the home page.</p>
               </div>
             </CardContent>
           </Card>
