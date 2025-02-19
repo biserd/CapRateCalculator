@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { propertyFormSchema, type PropertyFormData } from "@/lib/validators";
 import { calculateCapRate, calculateNOI, formatCurrency, formatPercentage, parseCurrency, formatInputCurrency } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
