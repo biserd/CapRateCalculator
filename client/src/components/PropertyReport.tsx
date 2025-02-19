@@ -24,6 +24,7 @@ interface PropertyReportProps {
     tenantRisk: number;
   };
   overallRiskScore?: number;
+  aiInsights?: any;
 }
 
 const styles = StyleSheet.create({
@@ -117,10 +118,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
     color: '#4B5563',
+  },
+  heading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subheading: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  content: {
+    marginBottom: 10,
+  },
+  text: {
+    fontSize: 12,
+    marginBottom: 2,
   }
 });
 
-export function PropertyReport({ formData, results, comparableProperties, riskScores, overallRiskScore }: PropertyReportProps) {
+export function PropertyReport({ formData, results, comparableProperties, riskScores, overallRiskScore, aiInsights }: PropertyReportProps) {
   const formatValue = (value: string | number | null) => {
     if (value === null || value === "") return "N/A";
     if (typeof value === "string") return value;
@@ -332,6 +350,32 @@ export function PropertyReport({ formData, results, comparableProperties, riskSc
             </View>
           </View>
         )}
+
+        {aiInsights && (
+              <View style={styles.section}>
+                <Text style={styles.heading}>AI Property Insights</Text>
+                <View style={styles.content}>
+                  <Text style={styles.subheading}>Market Value Estimate</Text>
+                  <Text style={styles.text}>{aiInsights.marketValueEstimate}</Text>
+
+                  <Text style={styles.subheading}>Key Factors</Text>
+                  {aiInsights.keyFactors.map((factor: string, index: number) => (
+                    <Text key={index} style={styles.text}>• {factor}</Text>
+                  ))}
+
+                  <Text style={styles.subheading}>Recommendations</Text>
+                  {aiInsights.recommendations.map((rec: string, index: number) => (
+                    <Text key={index} style={styles.text}>• {rec}</Text>
+                  ))}
+
+                  <Text style={styles.subheading}>Market Trends</Text>
+                  <Text style={styles.text}>{aiInsights.marketTrends}</Text>
+
+                  <Text style={styles.subheading}>Risk Assessment</Text>
+                  <Text style={styles.text}>{aiInsights.riskAssessment}</Text>
+                </View>
+              </View>
+            )}
 
         {/* Footer */}
         <Text style={styles.footer}>

@@ -179,8 +179,9 @@ export default function CapRateCalculator() {
       )
     })) || [],
     riskScores,
-    overallRiskScore
-  }), [formValues, results, comparableProperties, riskScores, overallRiskScore]);
+    overallRiskScore,
+    aiInsights: insights
+  }), [formValues, results, comparableProperties, riskScores, overallRiskScore, insights]);
 
   return (
     <div className="space-y-8">
@@ -465,9 +466,6 @@ export default function CapRateCalculator() {
       )}
       <div className="space-y-8 mt-8">
         <Card>
-          <CardHeader>
-            <CardTitle>AI Property Insights</CardTitle>
-          </CardHeader>
           {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent ? (
             <PropertyInsights
               propertyDetails={{
