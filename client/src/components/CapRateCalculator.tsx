@@ -16,7 +16,7 @@ import { RiskScoreVisualization } from "./RiskScoreVisualization";
 import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export default function CapRateCalculator() {
   const { toast } = useToast();
@@ -42,9 +42,7 @@ export default function CapRateCalculator() {
     if (sharedReport) {
       try {
         const reportData = JSON.parse(sharedReport);
-        // Reset form with shared report data
         form.reset(reportData);
-        // Clear the stored report data
         sessionStorage.removeItem('sharedReport');
       } catch (error) {
         console.error('Error loading shared report:', error);
@@ -67,9 +65,9 @@ export default function CapRateCalculator() {
     enabled: Boolean(postcode),
   });
 
-  const results = calculateResults(formValues);
-  const riskScores = calculateRiskScores(formValues, comparableProperties);
-  const overallRiskScore = calculateOverallRiskScore(riskScores);
+  const results = useMemo(() => calculateResults(formValues), [formValues]);
+  const riskScores = useMemo(() => calculateRiskScores(formValues, comparableProperties), [formValues, comparableProperties]);
+  const overallRiskScore = useMemo(() => calculateOverallRiskScore(riskScores), [riskScores]);
 
   function onReset() {
     form.reset();
@@ -110,7 +108,6 @@ export default function CapRateCalculator() {
     },
     onSuccess: (shareId) => {
       const shareUrl = `${window.location.origin}/shared/${shareId}`;
-      // Copy to clipboard
       navigator.clipboard.writeText(shareUrl).then(() => {
         toast({
           title: "Link Copied!",
@@ -132,53 +129,58 @@ export default function CapRateCalculator() {
     }
   });
 
+  // Memoize the buttons to prevent unnecessary re-renders
+  const actionButtons = useMemo(() => (
+    <div className="flex gap-2">
+      <Button
+        onClick={() => shareMutation.mutate()}
+        disabled={shareMutation.isPending || !postcode}
+        variant="outline"
+      >
+        <Share2 className="mr-2 h-4 w-4" />
+        {shareMutation.isPending ? "Generating Link..." : "Share Report"}
+      </Button>
+      <PDFDownloadLink
+        document={
+          <PropertyReport
+            formData={formValues}
+            results={results}
+            comparableProperties={comparableProperties?.map((property: any) => ({
+              purchasePrice: Number(property.purchasePrice),
+              monthlyRent: Number(property.monthlyRent),
+              capRate: calculateCapRate(
+                calculateNOI(
+                  Number(property.monthlyRent) * 12,
+                  (Number(property.monthlyHoa) * 12) +
+                    Number(property.annualTaxes) +
+                    Number(property.annualInsurance) +
+                    Number(property.annualMaintenance) +
+                    Number(property.managementFees)
+                ),
+                Number(property.purchasePrice)
+              )
+            }))}
+            riskScores={riskScores}
+            overallRiskScore={overallRiskScore}
+          />
+        }
+        fileName={`property-analysis-${formValues.postcode}.pdf`}
+      >
+        {({ loading }) => (
+          <Button disabled={loading || !postcode} variant="outline">
+            <FileDown className="mr-2 h-4 w-4" />
+            {loading ? "Generating PDF..." : "Export PDF"}
+          </Button>
+        )}
+      </PDFDownloadLink>
+    </div>
+  ), [shareMutation.isPending, shareMutation.mutate, postcode, formValues, results, comparableProperties, riskScores, overallRiskScore]);
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Property Details</h2>
-        <div className="flex gap-2">
-          <Button
-            onClick={() => shareMutation.mutate()}
-            disabled={shareMutation.isPending || !formValues.postcode}
-            variant="outline"
-          >
-            <Share2 className="mr-2 h-4 w-4" />
-            {shareMutation.isPending ? "Generating Link..." : "Share Report"}
-          </Button>
-          <PDFDownloadLink
-            document={
-              <PropertyReport
-                formData={formValues}
-                results={results}
-                comparableProperties={comparableProperties?.map((property: any) => ({
-                  purchasePrice: Number(property.purchasePrice),
-                  monthlyRent: Number(property.monthlyRent),
-                  capRate: calculateCapRate(
-                    calculateNOI(
-                      Number(property.monthlyRent) * 12,
-                      (Number(property.monthlyHoa) * 12) +
-                        Number(property.annualTaxes) +
-                        Number(property.annualInsurance) +
-                        Number(property.annualMaintenance) +
-                        Number(property.managementFees)
-                    ),
-                    Number(property.purchasePrice)
-                  )
-                }))}
-                riskScores={riskScores}
-                overallRiskScore={overallRiskScore}
-              />
-            }
-            fileName={`property-analysis-${formValues.postcode}.pdf`}
-          >
-            {({ loading }) => (
-              <Button disabled={loading || !formValues.postcode} variant="outline">
-                <FileDown className="mr-2 h-4 w-4" />
-                {loading ? "Generating PDF..." : "Export PDF"}
-              </Button>
-            )}
-          </PDFDownloadLink>
-        </div>
+        {actionButtons}
       </div>
 
       <Form {...form}>
