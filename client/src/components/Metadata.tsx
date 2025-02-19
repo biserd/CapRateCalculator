@@ -9,7 +9,7 @@ interface MetadataProps {
 
 export function Metadata({ title, description, keywords }: MetadataProps) {
   return (
-    <Helmet helmetData={{}}>
+    <Helmet>
       <title>{title} | Cap Rate Calculator</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}

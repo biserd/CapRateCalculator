@@ -47,7 +47,7 @@ function Router() {
 
 function App() {
   return (
-    <HelmetProvider context={{}}>
+    <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <Router />
         <Toaster />
