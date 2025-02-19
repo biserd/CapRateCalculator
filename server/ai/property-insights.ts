@@ -74,7 +74,7 @@ Format the response as a JSON object with the following structure:
       messages: [
         {
           role: "system",
-          content: "You are a professional real estate analyst specializing in property valuation and market analysis."
+          content: "You are a professional real estate analyst specializing in property valuation and market analysis. Please respond with valid JSON."
         },
         {
           role: "user",
@@ -82,8 +82,7 @@ Format the response as a JSON object with the following structure:
         }
       ],
       temperature: 0.7,
-      max_tokens: 1000,
-      response_format: { type: "json_object" }
+      max_tokens: 1000
     });
 
     if (!response.choices[0]?.message?.content) {
