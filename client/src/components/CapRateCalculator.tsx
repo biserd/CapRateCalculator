@@ -129,42 +129,45 @@ export default function CapRateCalculator() {
     }
   });
 
-  // Memoize the buttons to prevent unnecessary re-renders
+  // Memoize the PropertyReport component to prevent unnecessary re-renders
+  const propertyReport = useMemo(() => (
+    <PropertyReport
+      formData={formValues}
+      results={results}
+      comparableProperties={comparableProperties?.map((property: any) => ({
+        purchasePrice: Number(property.purchasePrice),
+        monthlyRent: Number(property.monthlyRent),
+        capRate: calculateCapRate(
+          calculateNOI(
+            Number(property.monthlyRent) * 12,
+            (Number(property.monthlyHoa) * 12) +
+              Number(property.annualTaxes) +
+              Number(property.annualInsurance) +
+              Number(property.annualMaintenance) +
+              Number(property.managementFees)
+          ),
+          Number(property.purchasePrice)
+        )
+      }))}
+      riskScores={riskScores}
+      overallRiskScore={overallRiskScore}
+    />
+  ), [formValues, results, comparableProperties, riskScores, overallRiskScore]);
+
+  // Memoize the action buttons
   const actionButtons = useMemo(() => (
     <div className="flex gap-2">
       <Button
         onClick={() => shareMutation.mutate()}
-        disabled={shareMutation.isPending || !postcode}
+        disabled={!postcode || shareMutation.isPending}
         variant="outline"
       >
         <Share2 className="mr-2 h-4 w-4" />
         {shareMutation.isPending ? "Generating Link..." : "Share Report"}
       </Button>
       <PDFDownloadLink
-        document={
-          <PropertyReport
-            formData={formValues}
-            results={results}
-            comparableProperties={comparableProperties?.map((property: any) => ({
-              purchasePrice: Number(property.purchasePrice),
-              monthlyRent: Number(property.monthlyRent),
-              capRate: calculateCapRate(
-                calculateNOI(
-                  Number(property.monthlyRent) * 12,
-                  (Number(property.monthlyHoa) * 12) +
-                    Number(property.annualTaxes) +
-                    Number(property.annualInsurance) +
-                    Number(property.annualMaintenance) +
-                    Number(property.managementFees)
-                ),
-                Number(property.purchasePrice)
-              )
-            }))}
-            riskScores={riskScores}
-            overallRiskScore={overallRiskScore}
-          />
-        }
-        fileName={`property-analysis-${formValues.postcode}.pdf`}
+        document={propertyReport}
+        fileName={`property-analysis-${postcode}.pdf`}
       >
         {({ loading }) => (
           <Button disabled={loading || !postcode} variant="outline">
@@ -174,7 +177,7 @@ export default function CapRateCalculator() {
         )}
       </PDFDownloadLink>
     </div>
-  ), [shareMutation.isPending, shareMutation.mutate, postcode, formValues, results, comparableProperties, riskScores, overallRiskScore]);
+  ), [postcode, shareMutation.isPending, shareMutation.mutate, propertyReport]);
 
   return (
     <div className="space-y-8">
