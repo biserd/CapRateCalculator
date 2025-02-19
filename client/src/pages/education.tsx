@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Metadata } from "@/components/Metadata";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function Education() {
   return (
@@ -20,11 +21,12 @@ export default function Education() {
           </div>
 
           <Tabs defaultValue="basics" className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="basics">Investment Basics</TabsTrigger>
-              <TabsTrigger value="formulas">Key Formulas</TabsTrigger>
-              <TabsTrigger value="strategies">Investment Strategies</TabsTrigger>
-              <TabsTrigger value="metrics">Risk Analysis</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+              <TabsTrigger value="basics">Fundamentals</TabsTrigger>
+              <TabsTrigger value="metrics">Key Metrics</TabsTrigger>
+              <TabsTrigger value="strategies">Strategies</TabsTrigger>
+              <TabsTrigger value="analysis">Risk Analysis</TabsTrigger>
+              <TabsTrigger value="resources">Resources</TabsTrigger>
             </TabsList>
 
             <TabsContent value="basics">
@@ -33,77 +35,149 @@ export default function Education() {
                   <CardTitle>Real Estate Investment Fundamentals</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Core Investment Concepts</h3>
-                    <p className="text-muted-foreground">
-                      Real estate investing involves generating returns through property ownership via two primary methods:
-                    </p>
-                    <ul className="list-disc list-inside mt-2 space-y-2 text-muted-foreground">
-                      <li>Cash Flow: Regular income from rental payments</li>
-                      <li>Appreciation: Increase in property value over time</li>
-                    </ul>
-                  </div>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="core-concepts">
+                      <AccordionTrigger>Core Investment Concepts</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Cash Flow Generation</h4>
+                            <p className="text-muted-foreground">Regular income streams from:</p>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Monthly rental payments</li>
+                              <li>Additional service fees</li>
+                              <li>Parking revenue</li>
+                              <li>Property amenities</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Property Appreciation</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Market value growth over time</li>
+                              <li>Neighborhood development impact</li>
+                              <li>Property improvements</li>
+                              <li>Market demand factors</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Income Components</h3>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                      <li>Rental Income: Primary source of cash flow</li>
-                      <li>Additional Income: Parking, laundry, etc.</li>
-                      <li>Tax Benefits: Depreciation and deductions</li>
-                      <li>Equity Building: Through mortgage paydown</li>
-                    </ul>
-                  </div>
+                    <AccordionItem value="market-dynamics">
+                      <AccordionTrigger>Market Dynamics</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Supply and Demand</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Population growth trends</li>
+                              <li>Local economic indicators</li>
+                              <li>Development pipeline</li>
+                              <li>Market absorption rates</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Location Analysis</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Neighborhood demographics</li>
+                              <li>Infrastructure development</li>
+                              <li>Employment centers</li>
+                              <li>Amenity proximity</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Expense Categories</h3>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                      <li>Operating Expenses: Utilities, maintenance, insurance</li>
-                      <li>Fixed Expenses: Property taxes, HOA fees</li>
-                      <li>Capital Expenditures: Major repairs and improvements</li>
-                      <li>Financing Costs: Mortgage payments and interest</li>
-                    </ul>
-                  </div>
+                    <AccordionItem value="financing">
+                      <AccordionTrigger>Investment Financing</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Financing Options</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Conventional mortgages</li>
+                              <li>Commercial loans</li>
+                              <li>Private lending</li>
+                              <li>Joint ventures</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Leverage Considerations</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Debt service coverage</li>
+                              <li>Interest rate impact</li>
+                              <li>Loan-to-value ratios</li>
+                              <li>Refinancing strategies</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="formulas">
+            <TabsContent value="metrics">
               <Card>
                 <CardHeader>
-                  <CardTitle>Essential Investment Formulas</CardTitle>
+                  <CardTitle>Essential Investment Metrics</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Capitalization Rate (Cap Rate)</h3>
-                    <div className="bg-secondary p-4 rounded-md">
-                      <p className="font-mono">Cap Rate = (NOI / Property Value) × 100%</p>
-                      <p className="font-mono mt-2">NOI = Annual Income - Operating Expenses</p>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      The Cap Rate indicates the potential return on investment, unaffected by financing. A higher cap rate typically suggests higher risk and potential return.
-                    </p>
-                  </div>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="returns">
+                      <AccordionTrigger>Return Metrics</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Capitalization Rate</h4>
+                            <p className="text-muted-foreground mt-2">Cap Rate = (NOI / Property Value) × 100%</p>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Measures property's unleveraged yield</li>
+                              <li>Useful for comparing different properties</li>
+                              <li>Indicates market risk perception</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Cash on Cash Return</h4>
+                            <p className="text-muted-foreground mt-2">CoC Return = (Annual Cash Flow / Total Cash Invested) × 100%</p>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Measures actual cash yield on investment</li>
+                              <li>Accounts for leverage effects</li>
+                              <li>Important for cash flow planning</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Cash on Cash Return</h3>
-                    <div className="bg-secondary p-4 rounded-md">
-                      <p className="font-mono">CoC Return = (Annual Cash Flow / Total Cash Invested) × 100%</p>
-                      <p className="font-mono mt-2">Annual Cash Flow = NOI - Debt Service</p>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      Cash on Cash Return measures the cash income earned on the cash invested in a property, considering financing.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Debt Service Coverage Ratio (DSCR)</h3>
-                    <div className="bg-secondary p-4 rounded-md">
-                      <p className="font-mono">DSCR = NOI / Annual Debt Service</p>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      DSCR measures the property's ability to cover its debt payments. A ratio above 1.25 is typically preferred by lenders.
-                    </p>
-                  </div>
+                    <AccordionItem value="operating">
+                      <AccordionTrigger>Operating Metrics</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Net Operating Income (NOI)</h4>
+                            <p className="text-muted-foreground mt-2">NOI = Total Revenue - Operating Expenses</p>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Key metric for property valuation</li>
+                              <li>Excludes debt service</li>
+                              <li>Used in multiple calculations</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Operating Expense Ratio</h4>
+                            <p className="text-muted-foreground mt-2">OER = (Operating Expenses / Effective Gross Income) × 100%</p>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Measures operational efficiency</li>
+                              <li>Benchmark for property management</li>
+                              <li>Industry comparisons</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -114,81 +188,153 @@ export default function Education() {
                   <CardTitle>Investment Strategies</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Value-Add Strategy</h3>
-                    <p className="text-muted-foreground">
-                      Purchase properties below market value and increase their worth through improvements:
-                    </p>
-                    <ul className="list-disc list-inside mt-2 space-y-2 text-muted-foreground">
-                      <li>Renovations and upgrades</li>
-                      <li>Operational efficiency improvements</li>
-                      <li>Increasing rental income</li>
-                      <li>Reducing operating expenses</li>
-                    </ul>
-                  </div>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="value-add">
+                      <AccordionTrigger>Value-Add Strategy</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <p className="text-muted-foreground">Property improvements to increase value and income:</p>
+                          <div>
+                            <h4 className="font-semibold">Physical Improvements</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Unit renovations</li>
+                              <li>Common area upgrades</li>
+                              <li>Energy efficiency improvements</li>
+                              <li>Amenity additions</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Operational Improvements</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Management optimization</li>
+                              <li>Expense reduction</li>
+                              <li>Revenue enhancement</li>
+                              <li>Marketing improvements</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Buy and Hold</h3>
-                    <p className="text-muted-foreground">
-                      Long-term ownership strategy focusing on:
-                    </p>
-                    <ul className="list-disc list-inside mt-2 space-y-2 text-muted-foreground">
-                      <li>Steady cash flow generation</li>
-                      <li>Property appreciation</li>
-                      <li>Equity building through mortgage paydown</li>
-                      <li>Tax advantages</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Market Timing</h3>
-                    <p className="text-muted-foreground">
-                      Strategies for different market cycles:
-                    </p>
-                    <ul className="list-disc list-inside mt-2 space-y-2 text-muted-foreground">
-                      <li>Buyer's Market: Focus on acquisitions</li>
-                      <li>Seller's Market: Consider strategic dispositions</li>
-                      <li>Balanced Market: Emphasis on operations</li>
-                    </ul>
-                  </div>
+                    <AccordionItem value="buy-hold">
+                      <AccordionTrigger>Buy and Hold Strategy</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <p className="text-muted-foreground">Long-term ownership benefits:</p>
+                          <div>
+                            <h4 className="font-semibold">Income Benefits</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Steady cash flow</li>
+                              <li>Rent appreciation</li>
+                              <li>Tax advantages</li>
+                              <li>Equity building</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Market Position</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Market cycle navigation</li>
+                              <li>Portfolio diversification</li>
+                              <li>Appreciation capture</li>
+                              <li>Inflation hedge</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="metrics">
+            <TabsContent value="analysis">
               <Card>
                 <CardHeader>
-                  <CardTitle>Risk Analysis</CardTitle>
+                  <CardTitle>Risk Analysis & Management</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Market Risk Factors</h3>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                      <li>Economic conditions and employment trends</li>
-                      <li>Supply and demand dynamics</li>
-                      <li>Demographic shifts</li>
-                      <li>Local market regulations</li>
-                    </ul>
-                  </div>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="market-risk">
+                      <AccordionTrigger>Market Risk Factors</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Economic Factors</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Interest rate changes</li>
+                              <li>Employment trends</li>
+                              <li>Economic cycles</li>
+                              <li>Demographic shifts</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Market Conditions</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Supply/demand balance</li>
+                              <li>Competitive properties</li>
+                              <li>Regulatory changes</li>
+                              <li>Market liquidity</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Property-Specific Risks</h3>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                      <li>Physical condition and age</li>
-                      <li>Location and neighborhood factors</li>
-                      <li>Tenant quality and vacancy risk</li>
-                      <li>Operating expense volatility</li>
-                    </ul>
-                  </div>
+                    <AccordionItem value="property-risk">
+                      <AccordionTrigger>Property-Specific Risks</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold">Physical Risks</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Property condition</li>
+                              <li>Environmental issues</li>
+                              <li>Construction quality</li>
+                              <li>Infrastructure age</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">Operational Risks</h4>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                              <li>Tenant quality</li>
+                              <li>Management effectiveness</li>
+                              <li>Expense control</li>
+                              <li>Revenue stability</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Risk Mitigation Strategies</h3>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                      <li>Thorough due diligence</li>
-                      <li>Professional property management</li>
-                      <li>Adequate insurance coverage</li>
-                      <li>Conservative underwriting assumptions</li>
-                    </ul>
+            <TabsContent value="resources">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Additional Resources</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid gap-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Investment Tools</h3>
+                      <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                        <li>Cap Rate Calculator</li>
+                        <li>Cash Flow Analysis Tools</li>
+                        <li>Market Analysis Reports</li>
+                        <li>Property Comparison Tools</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Recommended Reading</h3>
+                      <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                        <li>Real Estate Investment Analysis</li>
+                        <li>Property Valuation Methods</li>
+                        <li>Risk Management Strategies</li>
+                        <li>Market Research Techniques</li>
+                      </ul>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
