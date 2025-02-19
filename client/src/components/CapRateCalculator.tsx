@@ -17,6 +17,7 @@ import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalcul
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useEffect, useMemo, memo } from "react";
+import { PropertyInsights } from "./PropertyInsights"; // Added import
 
 // New component for the action buttons
 function ActionButtons({
@@ -467,7 +468,7 @@ export default function CapRateCalculator() {
           riskScores={riskScores}
           overallScore={overallRiskScore}
         />
-        
+
         {formValues.postcode && formValues.purchasePrice && formValues.monthlyRent && (
           <PropertyInsights
             propertyDetails={{
