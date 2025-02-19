@@ -15,6 +15,7 @@ import LocationAnalysis from "@/pages/location";
 import PortfolioDashboard from "@/pages/portfolio";
 import AdvancedAnalysis from "@/pages/advanced";
 import Education from "@/pages/education";
+import SharedReport from "@/pages/shared/[id]";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -43,6 +44,7 @@ function Router() {
         <Route path="/portfolio" component={PortfolioDashboard} />
         <Route path="/advanced" component={AdvancedAnalysis} />
         <Route path="/education" component={Education} />
+        <Route path="/shared/:id" component={SharedReport} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

@@ -7,14 +7,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { InfoIcon, FileDown } from "lucide-react";
+import { InfoIcon, FileDown, Share2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PropertyReport } from "./PropertyReport";
 import { RiskScoreVisualization } from "./RiskScoreVisualization";
 import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function CapRateCalculator() {
   const { toast } = useToast();
@@ -57,43 +58,104 @@ export default function CapRateCalculator() {
     field.onChange(parseCurrency(formatted));
   };
 
+  const shareMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/reports/share", {
+        propertyData: {
+          formData: formValues,
+          results,
+          comparableProperties: comparableProperties?.map((property: any) => ({
+            purchasePrice: Number(property.purchasePrice),
+            monthlyRent: Number(property.monthlyRent),
+            capRate: calculateCapRate(
+              calculateNOI(
+                Number(property.monthlyRent) * 12,
+                (Number(property.monthlyHoa) * 12) +
+                  Number(property.annualTaxes) +
+                  Number(property.annualInsurance) +
+                  Number(property.annualMaintenance) +
+                  Number(property.managementFees)
+              ),
+              Number(property.purchasePrice)
+            )
+          })),
+          riskScores,
+          overallRiskScore
+        }
+      });
+      return response.shareId;
+    },
+    onSuccess: (shareId) => {
+      const shareUrl = `${window.location.origin}/shared/${shareId}`;
+      // Copy to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        toast({
+          title: "Link Copied!",
+          description: "Share this link to show your property analysis to others.",
+        });
+      }).catch(() => {
+        toast({
+          title: "Share Link Generated",
+          description: shareUrl,
+        });
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to generate share link. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Property Details</h2>
-        <PDFDownloadLink 
-          document={
-            <PropertyReport 
-              formData={formValues} 
-              results={results} 
-              comparableProperties={comparableProperties?.map((property: any) => ({
-                purchasePrice: Number(property.purchasePrice),
-                monthlyRent: Number(property.monthlyRent),
-                capRate: calculateCapRate(
-                  calculateNOI(
-                    Number(property.monthlyRent) * 12,
-                    (Number(property.monthlyHoa) * 12) +
-                      Number(property.annualTaxes) +
-                      Number(property.annualInsurance) +
-                      Number(property.annualMaintenance) +
-                      Number(property.managementFees)
-                  ),
-                  Number(property.purchasePrice)
-                )
-              }))}
-              riskScores={riskScores}
-              overallRiskScore={overallRiskScore}
-            />
-          }
-          fileName={`property-analysis-${formValues.postcode}.pdf`}
-        >
-          {({ loading }) => (
-            <Button disabled={loading || !formValues.postcode} variant="outline">
-              <FileDown className="mr-2 h-4 w-4" />
-              {loading ? "Generating PDF..." : "Export PDF"}
-            </Button>
-          )}
-        </PDFDownloadLink>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => shareMutation.mutate()}
+            disabled={shareMutation.isPending || !formValues.postcode}
+            variant="outline"
+          >
+            <Share2 className="mr-2 h-4 w-4" />
+            {shareMutation.isPending ? "Generating Link..." : "Share Report"}
+          </Button>
+          <PDFDownloadLink
+            document={
+              <PropertyReport
+                formData={formValues}
+                results={results}
+                comparableProperties={comparableProperties?.map((property: any) => ({
+                  purchasePrice: Number(property.purchasePrice),
+                  monthlyRent: Number(property.monthlyRent),
+                  capRate: calculateCapRate(
+                    calculateNOI(
+                      Number(property.monthlyRent) * 12,
+                      (Number(property.monthlyHoa) * 12) +
+                        Number(property.annualTaxes) +
+                        Number(property.annualInsurance) +
+                        Number(property.annualMaintenance) +
+                        Number(property.managementFees)
+                    ),
+                    Number(property.purchasePrice)
+                  )
+                }))}
+                riskScores={riskScores}
+                overallRiskScore={overallRiskScore}
+              />
+            }
+            fileName={`property-analysis-${formValues.postcode}.pdf`}
+          >
+            {({ loading }) => (
+              <Button disabled={loading || !formValues.postcode} variant="outline">
+                <FileDown className="mr-2 h-4 w-4" />
+                {loading ? "Generating PDF..." : "Export PDF"}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        </div>
       </div>
 
       <Form {...form}>
@@ -119,10 +181,10 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Purchase Price</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -148,10 +210,10 @@ export default function CapRateCalculator() {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -167,10 +229,10 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Monthly Rental Income</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -186,10 +248,10 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Monthly HOA Fees</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -205,10 +267,10 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Annual Property Taxes</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -224,10 +286,10 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Annual Insurance Cost</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -243,10 +305,10 @@ export default function CapRateCalculator() {
                 <FormItem>
                   <FormLabel>Annual Maintenance Costs</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />
@@ -272,10 +334,10 @@ export default function CapRateCalculator() {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="$0.00" 
+                    <Input
+                      placeholder="$0.00"
                       {...field}
-                      value={field.value ? formatInputCurrency(field.value) : ''}
+                      value={field.value ? formatInputCurrency(field.value) : ""}
                       onBlur={(e) => handleBlur(e, field)}
                       onChange={(e) => field.onChange(parseCurrency(e.target.value))}
                     />

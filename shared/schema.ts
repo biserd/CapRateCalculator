@@ -1,4 +1,4 @@
-import { pgTable, text, serial, numeric, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, numeric, timestamp, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -35,3 +35,17 @@ export const propertyInsertSchema = createInsertSchema(properties)
 
 export type InsertProperty = z.infer<typeof propertyInsertSchema>;
 export type Property = typeof properties.$inferSelect;
+
+export const sharedReports = pgTable("shared_reports", {
+  id: serial("id").primaryKey(),
+  shareId: text("share_id").notNull().unique(),
+  propertyData: json("property_data").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+});
+
+export const sharedReportInsertSchema = createInsertSchema(sharedReports)
+  .omit({ id: true, createdAt: true });
+
+export type InsertSharedReport = z.infer<typeof sharedReportInsertSchema>;
+export type SharedReport = typeof sharedReports.$inferSelect;
