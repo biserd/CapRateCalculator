@@ -83,7 +83,8 @@ export default function CapRateCalculator() {
           overallRiskScore
         }
       });
-      return response.shareId;
+      const data = await response.json();
+      return data.shareId;
     },
     onSuccess: (shareId) => {
       const shareUrl = `${window.location.origin}/shared/${shareId}`;
