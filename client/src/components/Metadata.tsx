@@ -10,7 +10,7 @@ interface MetadataProps {
 export function Metadata({ title, description, keywords }: MetadataProps) {
   return (
     <Helmet>
-      <title>{title} | Cap Rate Calculator</title>
+      <title>{title} | Real Estate Cap Rate Calculator</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
     </Helmet>

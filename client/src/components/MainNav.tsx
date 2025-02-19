@@ -10,15 +10,15 @@ export function MainNav() {
 
   const navItems = [
     {
-      title: "Analysis Tools",
+      title: "Real Estate Analysis",
       items: [
         {
-          title: "Cap Rate Calculator",
+          title: "Real Estate Cap Rate Calculator",
           href: "/",
           icon: Building2
         },
         {
-          title: "Loan Calculator",
+          title: "Real Estate Loan Calculator",
           href: "/loan-calculator",
           icon: Calculator
         },
@@ -28,14 +28,14 @@ export function MainNav() {
           icon: ChartBar
         },
         {
-          title: "Market Analysis",
+          title: "Real Estate Market Analysis",
           href: "/market",
           icon: LineChart
         }
       ]
     },
     {
-      title: "Investment Tools",
+      title: "Real Estate Investment Tools",
       items: [
         {
           title: "Location Analysis",
