@@ -192,6 +192,32 @@ export function PropertyReport({ formData, results, comparableProperties, riskSc
           )}
         </View>
 
+        {/* Additional Property Details */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Additional Property Details</Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>Size (sq ft)</Text>
+            <Text style={styles.value}>{formData.sizeInSqFt}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Year Built</Text>
+            <Text style={styles.value}>{formData.yearBuilt}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Bedrooms</Text>
+            <Text style={styles.value}>{formData.bedrooms}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Bathrooms</Text>
+            <Text style={styles.value}>{formData.bathrooms}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Property Condition</Text>
+            <Text style={styles.value}>{formData.propertyCondition}</Text>
+          </View>
+        </View>
+
+
         {/* Financial Analysis */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Financial Analysis</Text>
