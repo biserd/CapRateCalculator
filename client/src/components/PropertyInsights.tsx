@@ -1,9 +1,11 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface PropertyDetails {
   purchasePrice: number;
@@ -29,23 +31,10 @@ interface ValuationInsights {
 
 export function PropertyInsights({ propertyDetails }: { propertyDetails: PropertyDetails }) {
   const { toast } = useToast();
+  const [shouldGenerate, setShouldGenerate] = useState(false);
 
-  const debouncedDetails = useMemo(() => {
-    return propertyDetails;
-  }, [
-    Math.round(propertyDetails.purchasePrice / 1000) * 1000,
-    Math.round(propertyDetails.monthlyRent / 100) * 100,
-    propertyDetails.location,
-    propertyDetails.propertyType,
-    Math.round(propertyDetails.squareFootage / 100) * 100,
-    propertyDetails.yearBuilt,
-    propertyDetails.bedrooms,
-    propertyDetails.bathrooms,
-    propertyDetails.propertyCondition,
-  ]);
-
-  const { data: insights, isLoading, isError } = useQuery({
-    queryKey: ['/api/properties/insights', debouncedDetails],
+  const { data: insights, isLoading, isError, refetch } = useQuery({
+    queryKey: ['/api/properties/insights', propertyDetails],
     queryFn: async () => {
       const response = await fetch('/api/properties/insights', {
         method: 'POST',
@@ -62,7 +51,7 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
 
       return response.json();
     },
-    enabled: Boolean(propertyDetails),
+    enabled: shouldGenerate,
     retry: false,
     onError: () => {
       toast({
@@ -72,6 +61,11 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
       });
     },
   });
+
+  const handleGenerateInsights = () => {
+    setShouldGenerate(true);
+    refetch();
+  };
 
   if (isLoading) {
     return (
@@ -109,7 +103,19 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
   }
 
   if (!insights) {
-    return null;
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>AI Property Insights</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <p className="text-muted-foreground">Click the button below to generate AI insights for this property.</p>
+            <Button onClick={handleGenerateInsights}>Generate AI Insights</Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -158,6 +164,10 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
           <div>
             <h3 className="text-lg font-semibold">Comparable Properties</h3>
             <p className="text-muted-foreground">{insights.comparableProperties}</p>
+          </div>
+
+          <div className="flex justify-center pt-4">
+            <Button onClick={handleGenerateInsights}>Regenerate Insights</Button>
           </div>
         </div>
       </CardContent>
