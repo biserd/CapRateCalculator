@@ -17,8 +17,11 @@ export default function SharedReport() {
       const report = await response.json();
 
       // Store the report data and redirect to calculator
-      if (report?.propertyData?.formData) {
-        sessionStorage.setItem('sharedReport', JSON.stringify(report.propertyData.formData));
+      if (report?.propertyData) {
+        sessionStorage.setItem('sharedReport', JSON.stringify({
+          formData: report.propertyData.formData,
+          aiInsights: report.propertyData.aiInsights
+        }));
         setLocation('/');
         toast({
           title: "Report Loaded",

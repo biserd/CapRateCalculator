@@ -138,7 +138,10 @@ export default function CapRateCalculator() {
     if (sharedReport) {
       try {
         const reportData = JSON.parse(sharedReport);
-        form.reset(reportData);
+        form.reset(reportData.formData);
+        if (reportData.aiInsights) {
+          setStoredInsights(reportData.aiInsights);
+        }
         sessionStorage.removeItem('sharedReport');
       } catch (error) {
         console.error('Error loading shared report:', error);
@@ -160,9 +163,14 @@ export default function CapRateCalculator() {
     field.onChange(parseCurrency(formatted));
   };
 
+  const [storedInsights, setStoredInsights] = useState(null);
   const { data: insights } = useQuery({
     queryKey: ['/api/properties/insights', formValues],
     queryFn: async () => {
+      // Return stored insights if available
+      if (storedInsights) {
+        return storedInsights;
+      }
       if (!formValues.postcode || !formValues.purchasePrice || !formValues.monthlyRent) {
         return null;
       }

@@ -24,7 +24,13 @@ interface PropertyReportProps {
     tenantRisk: number;
   };
   overallRiskScore?: number;
-  aiInsights?: any;
+  aiInsights?: {
+    marketValueEstimate: string;
+    keyFactors: string[];
+    recommendations: string[];
+    marketTrends: string;
+    riskAssessment: string;
+  };
 }
 
 const styles = StyleSheet.create({
