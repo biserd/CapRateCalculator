@@ -34,6 +34,10 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  useEffect(() => {
+    handleGenerateInsights();
+  }, []);
+
   const handleGenerateInsights = async () => {
     if (isLoading) return;
     
@@ -102,10 +106,6 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
       </Card>
     );
   }
-
-  useEffect(() => {
-    handleGenerateInsights();
-  }, []);
 
   if (!insights) {
     return (
