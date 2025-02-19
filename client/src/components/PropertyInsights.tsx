@@ -171,11 +171,7 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
             <p className="text-muted-foreground">{insights.comparableProperties}</p>
           </div>
 
-          <div className="flex justify-center pt-4">
-            <Button onClick={handleGenerateInsights} disabled={isLoading}>
-              {isLoading ? "Generating..." : "Regenerate Insights"}
-            </Button>
-          </div>
+          
         </div>
       </CardContent>
     </Card>
