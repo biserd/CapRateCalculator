@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { InfoIcon, FileDown } from "lucide-react";
+import { InfoIcon, FileDown, Save } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -16,9 +16,11 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PropertyReport } from "./PropertyReport";
 import { RiskScoreVisualization } from "./RiskScoreVisualization";
 import { calculateRiskScores, calculateOverallRiskScore } from "@/lib/riskCalculator";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CapRateCalculator() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertyFormSchema),
@@ -52,6 +54,17 @@ export default function CapRateCalculator() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/properties/postcode", postcode] });
+      toast({
+        title: "Property Saved",
+        description: "Your property details have been saved and will appear in the comparison page.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save property. Please try again.",
+        variant: "destructive",
+      });
     }
   });
 
@@ -72,6 +85,19 @@ export default function CapRateCalculator() {
   const riskScores = calculateRiskScores(formValues, comparableProperties);
   const overallRiskScore = calculateOverallRiskScore(riskScores);
 
+  function onSave() {
+    const isValid = propertyFormSchema.safeParse(formValues).success;
+    if (isValid) {
+      saveMutation.mutate(formValues);
+    } else {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields correctly.",
+        variant: "destructive",
+      });
+    }
+  }
+
   function onReset() {
     form.reset();
   }
@@ -85,39 +111,49 @@ export default function CapRateCalculator() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Property Details</h2>
-        <PDFDownloadLink 
-          document={
-            <PropertyReport 
-              formData={formValues} 
-              results={results} 
-              comparableProperties={comparableProperties?.map((property: any) => ({
-                purchasePrice: Number(property.purchasePrice),
-                monthlyRent: Number(property.monthlyRent),
-                capRate: calculateCapRate(
-                  calculateNOI(
-                    Number(property.monthlyRent) * 12,
-                    (Number(property.monthlyHoa) * 12) +
-                      Number(property.annualTaxes) +
-                      Number(property.annualInsurance) +
-                      Number(property.annualMaintenance) +
-                      Number(property.managementFees)
-                  ),
-                  Number(property.purchasePrice)
-                )
-              }))}
-              riskScores={riskScores}
-              overallRiskScore={overallRiskScore}
-            />
-          }
-          fileName={`property-analysis-${formValues.postcode}.pdf`}
-        >
-          {({ loading }) => (
-            <Button disabled={loading || !formValues.postcode} variant="outline">
-              <FileDown className="mr-2 h-4 w-4" />
-              {loading ? "Generating PDF..." : "Export PDF"}
-            </Button>
-          )}
-        </PDFDownloadLink>
+        <div className="flex gap-2">
+          <Button 
+            onClick={onSave} 
+            disabled={saveMutation.isPending}
+            variant="outline"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            {saveMutation.isPending ? "Saving..." : "Save Property"}
+          </Button>
+          <PDFDownloadLink 
+            document={
+              <PropertyReport 
+                formData={formValues} 
+                results={results} 
+                comparableProperties={comparableProperties?.map((property: any) => ({
+                  purchasePrice: Number(property.purchasePrice),
+                  monthlyRent: Number(property.monthlyRent),
+                  capRate: calculateCapRate(
+                    calculateNOI(
+                      Number(property.monthlyRent) * 12,
+                      (Number(property.monthlyHoa) * 12) +
+                        Number(property.annualTaxes) +
+                        Number(property.annualInsurance) +
+                        Number(property.annualMaintenance) +
+                        Number(property.managementFees)
+                    ),
+                    Number(property.purchasePrice)
+                  )
+                }))}
+                riskScores={riskScores}
+                overallRiskScore={overallRiskScore}
+              />
+            }
+            fileName={`property-analysis-${formValues.postcode}.pdf`}
+          >
+            {({ loading }) => (
+              <Button disabled={loading || !formValues.postcode} variant="outline">
+                <FileDown className="mr-2 h-4 w-4" />
+                {loading ? "Generating PDF..." : "Export PDF"}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        </div>
       </div>
 
       <Form {...form}>
