@@ -1,7 +1,8 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardHeader, CardTitle, CardContent } from "@material-tailwind/react";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 export default function SharedReport() {
   const { id } = useParams();
@@ -57,13 +58,12 @@ export default function SharedReport() {
     });
   }
 
-
   return (
     <div>
       {report && report.propertyData && (
         <Card>
           <CardHeader>
-            <CardTitle>AI Property Insights</CardTitle>
+            <h3 className="font-semibold text-lg">AI Property Insights</h3>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
