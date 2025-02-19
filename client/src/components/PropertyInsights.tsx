@@ -36,6 +36,7 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
   const { data: insights, isLoading, isError, refetch } = useQuery({
     queryKey: ['/api/properties/insights', propertyDetails],
     queryFn: async () => {
+      if (isLoading) return null;
       const response = await fetch('/api/properties/insights', {
         method: 'POST',
         headers: {
@@ -111,7 +112,9 @@ export function PropertyInsights({ propertyDetails }: { propertyDetails: Propert
         <CardContent>
           <div className="flex flex-col items-center justify-center space-y-4">
             <p className="text-muted-foreground">Click the button below to generate AI insights for this property.</p>
-            <Button onClick={handleGenerateInsights}>Generate AI Insights</Button>
+            <Button onClick={handleGenerateInsights} disabled={isLoading}>
+              {isLoading ? "Generating..." : "Generate AI Insights"}
+            </Button>
           </div>
         </CardContent>
       </Card>
