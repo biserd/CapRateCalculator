@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,7 +34,7 @@ export default function Education() {
                   <CardTitle>Real Estate Investment Fundamentals</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <Accordion type="single" collapsible className="w-full">
+                  <Accordion type="single" collapsible defaultValue="core-concepts" className="w-full">
                     <AccordionItem value="core-concepts">
                       <AccordionTrigger>Core Investment Concepts</AccordionTrigger>
                       <AccordionContent>
@@ -125,7 +124,7 @@ export default function Education() {
                   <CardTitle>Essential Investment Metrics</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <Accordion type="single" collapsible className="w-full">
+                  <Accordion type="single" collapsible defaultValue="returns" className="w-full">
                     <AccordionItem value="returns">
                       <AccordionTrigger>Return Metrics</AccordionTrigger>
                       <AccordionContent>
@@ -188,7 +187,7 @@ export default function Education() {
                   <CardTitle>Investment Strategies</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <Accordion type="single" collapsible className="w-full">
+                  <Accordion type="single" collapsible defaultValue="value-add" className="w-full">
                     <AccordionItem value="value-add">
                       <AccordionTrigger>Value-Add Strategy</AccordionTrigger>
                       <AccordionContent>
@@ -253,7 +252,7 @@ export default function Education() {
                   <CardTitle>Risk Analysis & Management</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <Accordion type="single" collapsible className="w-full">
+                  <Accordion type="single" collapsible defaultValue="market-risk" className="w-full">
                     <AccordionItem value="market-risk">
                       <AccordionTrigger>Market Risk Factors</AccordionTrigger>
                       <AccordionContent>
