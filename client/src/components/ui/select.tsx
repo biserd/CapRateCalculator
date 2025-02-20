@@ -4,7 +4,11 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const Select = SelectPrimitive.Root
+const Select = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
+>(({ ...props }, ref) => <SelectPrimitive.Root {...props} ref={ref} />)
+Select.displayName = SelectPrimitive.Root.displayName
 
 const SelectGroup = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Group>,
