@@ -70,7 +70,7 @@ Format the response as a JSON object with the following structure:
     }
 
     const response = await openai.chat.completions.create({
-      model: "chatgpt-4o-latest",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
@@ -85,6 +85,8 @@ Format the response as a JSON object with the following structure:
       temperature: 0.7,
       max_tokens: 1000,
     });
+
+    console.log('OpenAI Response:', response);
 
     if (!response.choices[0]?.message?.content) {
       throw new Error("Invalid or empty OpenAI response");
