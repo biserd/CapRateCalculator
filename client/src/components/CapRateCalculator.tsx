@@ -27,6 +27,8 @@ import { apiRequest } from "@/lib/queryClient";
 function ActionButtons({
   postcode,
   reportData,
+  showInsights,
+  setShowInsights,
 }: {
   postcode: string;
   reportData: {
@@ -36,6 +38,8 @@ function ActionButtons({
     riskScores: any;
     overallRiskScore: number;
   };
+  showInsights: boolean;
+  setShowInsights: (show: boolean) => void;
 }) {
   const { toast } = useToast();
 
@@ -254,7 +258,12 @@ export default function CapRateCalculator() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Property Details</h2>
-        <MemoizedActionButtons postcode={postcode} reportData={reportData} />
+        <MemoizedActionButtons 
+          postcode={postcode} 
+          reportData={reportData} 
+          showInsights={showInsights} 
+          setShowInsights={setShowInsights}
+        />
       </div>
 
       <Form {...form}>
