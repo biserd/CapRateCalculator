@@ -541,9 +541,9 @@ export default function CapRateCalculator() {
                         <SelectValue placeholder="Select Condition" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="needs renovation">Needs Renovation</SelectItem>
+                        <SelectItem value="needs_renovation">Needs Renovation</SelectItem>
                         <SelectItem value="usable">Usable</SelectItem>
-                        <SelectItem value="perfect condition">Perfect Condition</SelectItem>
+                        <SelectItem value="perfect_condition">Perfect Condition</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
