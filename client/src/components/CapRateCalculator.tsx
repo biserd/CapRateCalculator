@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { InfoIcon, FileDown, Share2 } from "lucide-react";
+import { InfoIcon, FileDown, Share2, Sparkles } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -102,6 +102,10 @@ function ActionButtons({
           </Button>
         )}
       </PDFDownloadLink>
+      <Button onClick={() => setShowInsights(true)} variant="outline">
+        <Sparkles className="mr-2 h-4 w-4" />
+        {showInsights ? "Regenerate Insights" : "Generate AI Insights"}
+      </Button>
     </div>
   );
 }
@@ -554,9 +558,7 @@ export default function CapRateCalculator() {
           </div>
           <div className="flex gap-4">
             <Button type="button" variant="outline" onClick={onReset}>Reset</Button>
-            <Button type="button" onClick={() => setShowInsights(true)}>
-              {showInsights ? "Regenerate Insights" : "Generate AI Insights"}
-            </Button>
+            {/* Removed Generate AI Insights button from here */}
           </div>
         </form>
       </Form>
