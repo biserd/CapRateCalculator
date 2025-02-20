@@ -30,7 +30,7 @@ export const propertyFormSchema = z.object({
   yearBuilt: z.number().default(2000),
   bedrooms: z.number().default(2),
   bathrooms: z.number().default(2),
-  propertyCondition: z.enum(["needs_renovation", "usable", "perfect"]).default("usable")
+  propertyCondition: z.enum(["needs renovation", "usable", "perfect condition"]).default("usable")
 });
 
 export const loanCalculatorSchema = z.object({
