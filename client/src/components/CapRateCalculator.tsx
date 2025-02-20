@@ -106,7 +106,11 @@ function ActionButtons({
           </Button>
         )}
       </PDFDownloadLink>
-      <Button onClick={() => setShowInsights(true)} variant="outline">
+      <Button 
+        onClick={() => setShowInsights(true)} 
+        variant="outline"
+        disabled={!postcode || !formValues.purchasePrice || !formValues.monthlyRent}
+      >
         <Sparkles className="mr-2 h-4 w-4" />
         {showInsights ? "Regenerate Insights" : "Generate AI Insights"}
       </Button>
