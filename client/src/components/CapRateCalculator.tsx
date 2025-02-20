@@ -140,7 +140,20 @@ export default function CapRateCalculator() {
   });
 
   const results = useMemo(() => calculateResults(formValues), [formValues]);
-  const riskScores = useMemo(() => calculateRiskScores(formValues, comparableProperties), [formValues, comparableProperties]);
+  const riskScores = useMemo(() => calculateRiskScores({
+    purchasePrice: Number(formValues.purchasePrice) || 0,
+    monthlyRent: Number(formValues.monthlyRent) || 0,
+    monthlyHoa: Number(formValues.monthlyHoa) || 0,
+    annualTaxes: Number(formValues.annualTaxes) || 0,
+    annualInsurance: Number(formValues.annualInsurance) || 0,
+    annualMaintenance: Number(formValues.annualMaintenance) || 0,
+    managementFees: Number(formValues.managementFees) || 0,
+    postcode: formValues.postcode || "",
+    yearBuilt: Number(formValues.yearBuilt) || new Date().getFullYear(),
+    squareFootage: Number(formValues.sizeInSqFt) || 0,
+    bedrooms: Number(formValues.bedrooms) || 0,
+    bathrooms: Number(formValues.bathrooms) || 0,
+  }, comparableProperties), [formValues, comparableProperties]);
   const overallRiskScore = useMemo(() => calculateOverallRiskScore(riskScores), [riskScores]);
 
   useEffect(() => {

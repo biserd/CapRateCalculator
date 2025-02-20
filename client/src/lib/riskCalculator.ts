@@ -8,6 +8,10 @@ interface PropertyData {
   annualMaintenance: number;
   managementFees: number;
   postcode: string;
+  yearBuilt: number;
+  squareFootage: number;
+  bedrooms: number;
+  bathrooms: number;
 }
 
 interface RiskScores {
@@ -78,8 +82,14 @@ function calculatePropertyConditionRisk(propertyData: PropertyData): number {
   const maintenanceRatio = 
     Number(propertyData.annualMaintenance) / Number(propertyData.purchasePrice);
   
-  // Convert maintenance ratio to risk score (0-10)
-  return Math.min(10, Math.max(1, maintenanceRatio * 1000));
+  const currentYear = new Date().getFullYear();
+  const ageRisk = Math.min(10, Math.max(1, (currentYear - propertyData.yearBuilt) / 10));
+  
+  const sizeEfficiency = propertyData.squareFootage / (propertyData.bedrooms + propertyData.bathrooms);
+  const sizeRisk = Math.min(10, Math.max(1, Math.abs(sizeEfficiency - 400) / 50));
+  
+  // Combine risks with weights
+  return Math.min(10, (maintenanceRatio * 1000 * 0.4) + (ageRisk * 0.4) + (sizeRisk * 0.2));
 }
 
 function calculateTenantRisk(propertyData: PropertyData): number {
