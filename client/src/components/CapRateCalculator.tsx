@@ -29,6 +29,7 @@ function ActionButtons({
   reportData,
   showInsights,
   setShowInsights,
+  formValues,
 }: {
   postcode: string;
   reportData: {
@@ -40,6 +41,7 @@ function ActionButtons({
   };
   showInsights: boolean;
   setShowInsights: (show: boolean) => void;
+  formValues: PropertyFormData;
 }) {
   const { toast } = useToast();
 
@@ -267,6 +269,7 @@ export default function CapRateCalculator() {
           reportData={reportData} 
           showInsights={showInsights} 
           setShowInsights={setShowInsights}
+          formValues={formValues}
         />
       </div>
 
