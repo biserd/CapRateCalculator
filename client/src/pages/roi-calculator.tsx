@@ -129,7 +129,6 @@ export default function ROICalculator() {
               <TabsTrigger value="mortgage">Mortgage</TabsTrigger>
               <TabsTrigger value="tax">Tax Benefits</TabsTrigger>
               <TabsTrigger value="renovation">Renovation ROI</TabsTrigger>
-              <TabsTrigger value="insights">AI Insights</TabsTrigger>
             </TabsList>
 
             <Card>
@@ -470,22 +469,6 @@ export default function ROICalculator() {
                           )}
                         />
                       </div>
-                    </TabsContent>
-                    <TabsContent value="insights">
-                      <PropertyInsights
-                        propertyDetails={{
-                          purchasePrice: Number(formValues.purchasePrice) || 0,
-                          monthlyRent: Number(formValues.monthlyRent) || 0,
-                          location: "San Francisco, CA", // This could be made dynamic with a location picker
-                          propertyType: "Residential",
-                          squareFootage: 1500, // These could be added to the form
-                          yearBuilt: 2000,
-                          bedrooms: 3,
-                          bathrooms: 2,
-                          propertyCondition: formValues.renovationType === "major" ? "Needs Renovation" :
-                            formValues.renovationType === "moderate" ? "Average" : "Good",
-                        }}
-                      />
                     </TabsContent>
                   </form>
                 </Form>
